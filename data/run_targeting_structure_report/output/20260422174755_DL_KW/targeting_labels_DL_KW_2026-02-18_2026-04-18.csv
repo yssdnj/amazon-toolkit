@@ -1,0 +1,269 @@
+﻿Campaign Name,Ad Group Name,Targeting,Match Type,impressions,clicks,orders,spend,sales,ACoS(%),CVR(%),CPC($),销售占比(%),花费占比(%),label,action,adj_pct,adj_dollar,reason
+DL_Auto_Old,Auto-4,loose-match,-,30951,575,57,448.5,1283.57,34.9,9.91,0.78,12.22,12.16,✅ 低ACoS出单,🔒 保护,0%,$0.00,核心流量，维持出价
+DL_Auto_Old,Auto-4,close-match,-,47958,293,40,240.06,950.6700000000001,25.3,13.65,0.82,9.05,6.51,✅ 低ACoS出单,🔒 保护,0%,$0.00,核心流量，维持出价
+DL_1_double dog leash for two dogs_强相关_1210,精准,double dog leash for two dogs,EXACT,14744,172,35,221.01,841.6800000000001,26.3,20.35,1.28,8.01,5.99,✅ 低ACoS出单,🔒 保护,0%,$0.00,核心流量，维持出价
+DL_2_leash for 2 dogs,Exact,leash for 2 dogs,EXACT,52347,300,34,328.74,721.48,45.6,11.33,1.1,6.87,8.91,⚠️ 高ACoS出单,🔒 保护,0%,$0.00,核心流量，谨慎调整
+DL_1_double dog leash_强相关_1210,精准,double dog leash,EXACT,27636,232,30,231.42,660.95,35.0,12.93,1.0,6.29,6.27,✅ 低ACoS出单,🔒 保护,0%,$0.00,核心流量，维持出价
+DL_4_no tangle double dog leash_FX_0624,精准,no tangle double dog leash,EXACT,36874,229,27,229.14,603.0600000000001,38.0,11.79,1.0,5.74,6.21,⚠️ 高ACoS出单,🔒 保护,0%,$0.00,核心流量，谨慎调整
+DL_double dog leash_词组,词组,double dog leash,PHRASE,4181,145,23,160.8,498.47,32.3,15.86,1.11,4.74,4.36,✅ 低ACoS出单,🔒 保护,0%,$0.00,核心流量，维持出价
+DL_Auto_Old,Auto-4,substitutes,-,55454,215,19,138.81,405.84000000000003,34.2,8.84,0.65,3.86,3.76,✅ 低ACoS出单,🔒 保护,0%,$0.00,核心流量，维持出价
+DL_1_double leash for two dogs_强相关_1210,精准,double leash for two dogs,EXACT,13582,83,18,79.25,407.35,19.5,21.69,0.95,3.88,2.15,✅ 低ACoS出单,🔒 保护,0%,$0.00,核心流量，维持出价
+DL_2_dog leash for 2 dogs_DW_0708,精准,dog leash for 2 dogs,EXACT,8425,75,14,75.96000000000001,310.46000000000004,24.5,18.67,1.01,2.95,2.06,✅ 低ACoS出单,🔒 保护,0%,$0.00,核心流量，维持出价
+DL_5_double leash for two small dogs,Exact,double leash for two small dogs,EXACT,12074,98,14,117.28999999999999,307.68,38.1,14.29,1.2,2.93,3.18,⚠️ 高ACoS出单,↘ 降价,-5%,$0.06,ACoS超出目标3%，小幅降价
+DL_1_dual dog leash with tangle-free swivel_强相关_1210,精准,dual dog leash with tangle-free swivel,EXACT,12639,91,9,119.6,202.01,59.2,9.89,1.31,1.92,3.24,⚠️ 高ACoS出单,↘ 降价,-15%,$0.20,ACoS严重偏高（60%），大幅降价
+DL_2_2 dog leash no tangle,Exact,2 dog leash no tangle,EXACT,4892,37,9,34.01,207.01,16.4,24.32,0.92,1.97,0.92,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_4_leash splitter,Exact,leash splitter,EXACT,11673,76,8,85.94999999999999,197.01,43.6,10.53,1.13,1.87,2.33,⚠️ 高ACoS出单,↘ 降价,-5%,$0.06,ACoS超出目标18%，小幅降价
+DL_5_two dog leash no tangle small dog,Exact,two dog leash no tangle small dog,EXACT,1266,24,6,30.83,137.34,22.4,25.0,1.28,1.31,0.84,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_0_split leash for walking 2 dogs_FX_0624,精准,split leash for walking 2 dogs,EXACT,7423,49,6,43.67,137.24,31.8,12.24,0.89,1.31,1.18,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_2_dual dog leash_DW_1014,精准,dual dog leash,EXACT,4557,32,6,28.79,141.34,20.4,18.75,0.9,1.35,0.78,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_1_two dog leash no tangle_强相关_1210,精准,two dog leash no tangle,EXACT,14531,100,6,95.25,137.34,69.4,6.0,0.95,1.31,2.58,⚠️ 高ACoS出单,↘ 降价,-15%,$0.14,ACoS严重偏高（87%），大幅降价
+DL_2_dog leash for 2 dogs_DW_0708,精准,dog leashes for 2 dogs,EXACT,6291,37,5,35.02,111.85,31.3,13.51,0.95,1.06,0.95,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_1_small dog leash_DW_捡漏,精准,small dog leash,EXACT,11108,59,5,69.22,117.45,58.9,8.47,1.17,1.12,1.88,⚠️ 高ACoS出单,↘ 降价,-15%,$0.18,ACoS严重偏高（59%），大幅降价
+DL_0_合集_two相关,two相关,leash for two dogs,EXACT,2580,31,5,29.78,108.45,27.5,16.13,0.96,1.03,0.81,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_0_dog double leash_FX,精准,dog double leash,EXACT,2244,17,4,15.969999999999999,88.56,18.0,23.53,0.94,0.84,0.43,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_0_合集_two相关,two相关,dog leash two clips,EXACT,1002,13,4,13.040000000000001,80.56,16.2,30.77,1.0,0.77,0.35,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_4_2 dog leash tangle free for small dogs_FX_0624_0708,精准,2 dog leash tangle free for small dogs,EXACT,2114,14,4,16.38,162.23000000000002,10.1,28.57,1.17,1.54,0.44,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_howgo_词组,词组,howgo,PHRASE,2078,8,3,4.95,67.98,7.3,37.5,0.62,0.65,0.13,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_0_short double dog leash,精准,short double dog leash,EXACT,574,7,3,8.79,60.67,14.5,42.86,1.26,0.58,0.24,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_dog leash for 2 dogs_词组,词组,dog leash for 2 dogs,PHRASE,1920,25,3,22.81,65.67,34.7,12.0,0.91,0.62,0.62,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_0_leash coupler_FX,精准,leash coupler,EXACT,3139,24,3,28.080000000000002,57.67,48.7,12.5,1.17,0.55,0.76,⚠️ 高ACoS出单,↘ 降价,-10%,$0.12,ACoS超出目标32%，中幅降价
+DL_0_合集_two相关多词,two相关多词,dual dog leash for 2 small dogs,EXACT,1821,18,3,17.82,66.67,26.7,16.67,0.99,0.63,0.48,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_4_double dog leash no tangle_1117,Exact,double dog leash no tangle,EXACT,1466,16,3,17.990000000000002,69.47,25.9,18.75,1.12,0.66,0.49,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_0_合集_two相关多词,two相关多词,double lead leash for two dogs,EXACT,1995,8,3,8.68,77.77000000000001,11.2,37.5,1.08,0.74,0.24,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_0_合集_two相关,two相关,dog leash with two clips,EXACT,2307,16,3,14.84,66.67,22.3,18.75,0.93,0.63,0.4,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_5_dog leash coupler,Exact,dog leash coupler,EXACT,6477,36,2,43.04,35.78,120.3,5.56,1.2,0.34,1.17,⚠️ 高ACoS出单,↘ 降价,-15%,$0.18,ACoS严重偏高（225%），大幅降价
+DL_5_split dog leash_UD_1117,Exact,split dog leash,EXACT,1547,13,2,15.04,47.78,31.5,15.38,1.16,0.45,0.41,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_4_multiple dog leash no tangle_DW_1117,Exact,multiple dog leash no tangle,EXACT,214,3,2,2.65,45.78,5.8,66.67,0.88,0.44,0.07,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_5_leash for two dogs tangle free_UD_1117,Exact,leash for two dogs tangle free,EXACT,2164,12,2,13.899999999999999,41.78,33.3,16.67,1.16,0.4,0.38,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_4_dual leash,Exact,dual leash,EXACT,2632,17,2,17.26,36.78,46.9,11.76,1.02,0.35,0.47,⚠️ 高ACoS出单,↘ 降价,-10%,$0.10,ACoS超出目标27%，中幅降价
+DL_5_tandem leash for two dogs_FX_0113,Exact,tandem leash for two dogs,EXACT,613,14,2,16.16,42.78,37.8,14.29,1.15,0.41,0.44,⚠️ 高ACoS出单,↘ 降价,-5%,$0.06,ACoS超出目标2%，小幅降价
+DL_0_合集_double相关,double相关,double leash for large dog,EXACT,4142,26,2,23.03,47.78,48.2,7.69,0.89,0.45,0.62,⚠️ 高ACoS出单,↘ 降价,-10%,$0.09,ACoS超出目标30%，中幅降价
+DL_5_double clip dog leash_FX-Tos120_1014,精准,double clip dog leash,EXACT,2039,40,2,44.95,41.78,107.6,5.0,1.12,0.4,1.22,⚠️ 高ACoS出单,↘ 降价,-15%,$0.17,ACoS严重偏高（191%），大幅降价
+DL_0_合集_double相关,double相关,double dog leash for small dogs,EXACT,873,14,2,15.43,42.78,36.1,14.29,1.1,0.41,0.42,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_0_合集_two相关,two相关,leash two dogs,EXACT,1912,10,2,9.09,37.78,24.1,20.0,0.91,0.36,0.25,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_0_合集_two相关,two相关,split leash for two dogs,EXACT,1063,8,2,7.25,47.78,15.2,25.0,0.91,0.45,0.2,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_0_合集_splitter coupler相关,splitter coupler,coupler for dog leash,EXACT,761,15,2,16.62,39.78,41.8,13.33,1.11,0.38,0.45,⚠️ 高ACoS出单,↘ 降价,-5%,$0.06,ACoS超出目标13%，小幅降价
+DL_0_合集_dual相关,dual相关,dual leash small dogs,EXACT,1983,19,2,18.509999999999998,39.78,46.5,10.53,0.97,0.38,0.5,⚠️ 高ACoS出单,↘ 降价,-10%,$0.10,ACoS超出目标26%，中幅降价
+DL_3_short leash,Exact,short leash,EXACT,2399,9,2,6.96,47.78,14.6,22.22,0.77,0.45,0.19,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_5_dog leash splitter_1225,Exact,dog leash splitter,EXACT,334,8,2,8.379999999999999,47.78,17.5,25.0,1.05,0.45,0.23,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_5_hands free double dog leash,Exact,hands free double dog leash,EXACT,1570,16,1,16.16,23.89,67.6,6.25,1.01,0.23,0.44,⚠️ 高ACoS出单,↘ 降价,-15%,$0.15,ACoS严重偏高（83%），大幅降价
+DL_0_合集_2相关,2相关,dog leashes for 2,EXACT,266,2,1,2.4699999999999998,23.89,10.3,50.0,1.23,0.23,0.07,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_0_合集_2相关,2相关,dog leashes for 2 dogs,EXACT,1149,7,1,5.33,18.89,28.2,14.29,0.76,0.18,0.14,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_5_retractable double dog leash,Exact,retractable double dog leash,EXACT,705,7,1,7.46,23.89,31.2,14.29,1.07,0.23,0.2,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_5_tangle free dual dog leash_FX_Tos120_1225,精准,tangle free dual dog leash,EXACT,106,2,1,1.92,18.89,10.2,50.0,0.96,0.18,0.05,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_5_double ended dog leash,Exact,double ended dog leash,EXACT,2897,13,1,11.92,23.89,49.9,7.69,0.92,0.23,0.32,⚠️ 高ACoS出单,↘ 降价,-10%,$0.09,ACoS超出目标35%，中幅降价
+DL_0_合集_2相关,2相关,2 small dog leash,EXACT,116,3,1,3.32,23.89,13.9,33.33,1.11,0.23,0.09,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_0_合集_two相关多词,two相关多词,double leash for two dogs small,EXACT,519,10,1,9.55,23.89,40.0,10.0,0.96,0.23,0.26,⚠️ 高ACoS出单,↘ 降价,-5%,$0.05,ACoS超出目标8%，小幅降价
+DL_0_合集_dual相关,dual相关,dual dog leash attachment,EXACT,633,5,1,4.65,23.89,19.5,20.0,0.93,0.23,0.13,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_0_合集_other相关,other,twin dog leash,EXACT,82,1,1,0.89,21.89,4.1,100.0,0.89,0.21,0.02,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_0_合集_splitter coupler相关,splitter coupler,duel leash for dogs,EXACT,126,1,1,1.26,17.89,7.0,100.0,1.26,0.17,0.03,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_0_合集_two相关,two相关,dog leash for two small dogs,EXACT,386,5,1,5.21,23.89,21.8,20.0,1.04,0.23,0.14,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_0_合集_splitter coupler相关,splitter coupler,split leash,EXACT,258,4,1,5.279999999999999,23.89,22.1,25.0,1.32,0.23,0.14,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_0_合集_two相关,two相关,two dog leash no tangle small,EXACT,224,2,1,1.98,23.89,8.3,50.0,0.99,0.23,0.05,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_0_合集_2相关,2相关,one leash for 2 dogs no tangle,EXACT,236,2,1,1.72,23.89,7.2,50.0,0.86,0.23,0.05,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_0_合集_two相关,two相关,two dog leash attachment,EXACT,509,3,1,2.9699999999999998,18.89,15.7,33.33,0.99,0.18,0.08,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_0_合集_other相关,other,multiple dog leash no tangle 3,EXACT,210,1,1,1.13,23.89,4.7,100.0,1.13,0.23,0.03,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_0_double leash for two dogs no tangle small,精准,double leash for two dogs no tangle small,EXACT,187,5,1,5.99,23.89,25.1,20.0,1.2,0.23,0.16,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_0_合集_double相关,double相关,double leash for small dogs,EXACT,2488,19,1,19.8,17.89,110.7,5.26,1.04,0.17,0.54,⚠️ 高ACoS出单,↘ 降价,-15%,$0.16,ACoS严重偏高（199%），大幅降价
+DL_0_合集_double相关,double相关,no tangle double dog leash small,EXACT,74,3,1,3.29,21.89,15.0,33.33,1.1,0.21,0.09,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_0_合集_double相关,double相关,double dog walking leash,EXACT,131,1,1,0.75,18.89,4.0,100.0,0.75,0.18,0.02,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_0_合集_double相关,double相关,double slip leads for dogs,EXACT,539,6,1,5.25,26.99,19.5,16.67,0.88,0.26,0.14,✅ 低ACoS出单,↗ 维持/提价,+0~5%,$0.00,表现良好，可小幅提价测试
+DL_0_合集_double相关,double相关,double clip leash,EXACT,882,12,1,12.719999999999999,18.89,67.3,8.33,1.06,0.18,0.34,⚠️ 高ACoS出单,↘ 降价,-15%,$0.16,ACoS严重偏高（82%），大幅降价
+A-双头绳定位,双头绳定位,"asin-expanded=""B07CQ2R8DV""",-,24,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+A-双头绳定位,双头绳定位,"asin-expanded=""B084JGTR9B""",-,26,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+A-双头绳定位,双头绳定位,"asin-expanded=""B08J7GK4ZM""",-,4,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+A-双头绳定位,双头绳定位,"asin-expanded=""B09XR22JRQ""",-,4,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+A-双头绳定位,双头绳定位,"asin-expanded=""B0BZ3YRBB8""",-,2,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+A-双头绳定位,双头绳定位,"asin-expanded=""B0C3GXYDHR""",-,9,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_4_tanglefree dual dog leash with tangle-free swivel,精准,tanglefree dual dog leash with tangle-free swivel,EXACT,0,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_5_2 leash dog walker no tangle,Exact,2 leash dog walker no tangle,EXACT,160,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_5_anti tangle double leash_0624,精准,anti tangle double leash,EXACT,47,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_5_anti tangle dual dog leash,Exact,anti tangle dual dog leash,EXACT,252,2,0,2.43,0.0,,0.0,1.22,0.0,0.07,⚪ 低点击不出单,↘ 降价,-10%,$0.12,无出单，降低无效花费
+DL_5_dog leash connector,Exact,dog leash connector,EXACT,1142,4,0,4.2,0.0,,0.0,1.05,0.0,0.11,⚪ 低点击不出单,↘ 降价,-10%,$0.11,无出单，降低无效花费
+DL_5_dog leash for 2 dogs tangle free_UD_1117,Exact,dog leash for 2 dogs tangle free,EXACT,796,1,0,0.97,0.0,,0.0,0.97,0.0,0.03,⚪ 低点击不出单,↘ 降价,-10%,$0.10,无出单，降低无效花费
+DL_5_dog leash for two dogs,Exact,dog leash for two dogs,EXACT,385,4,0,2.86,0.0,,0.0,0.72,0.0,0.08,⚪ 低点击不出单,↘ 降价,-10%,$0.07,无出单，降低无效花费
+A-双头绳定位,双头绳定位,"asin-expanded=""B0DBZXT5HF""",-,12,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+A-双头绳定位,双头绳定位,"asin-expanded=""B0D7PDG17Z""",-,13,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_dog dual leash_FX,精准,dog dual leash,EXACT,692,5,0,5.609999999999999,0.0,,0.0,1.12,0.0,0.15,⚪ 低点击不出单,↘ 降价,-10%,$0.11,无出单，降低无效花费
+DL_0_dog leash with two hooks,精准,dog leash with two hooks,EXACT,445,3,0,4.06,0.0,,0.0,1.35,0.0,0.11,⚪ 低点击不出单,↘ 降价,-10%,$0.14,无出单，降低无效花费
+DL_0_dog leashes for 2 dogs together_FX,精准,dog leashes for 2 dogs together,EXACT,206,1,0,1.24,0.0,,0.0,1.24,0.0,0.03,⚪ 低点击不出单,↘ 降价,-10%,$0.12,无出单，降低无效花费
+DL_0_double dog lead for two dogs,精准,double dog lead for two dogs,EXACT,35,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_double dog leash attachment_FX_1117,精准,double dog leash attachment,EXACT,22,1,0,1.2,0.0,,0.0,1.2,0.0,0.03,⚪ 低点击不出单,↘ 降价,-10%,$0.12,无出单，降低无效花费
+DL_0_double dog leash splitter,精准,double dog leash splitter,EXACT,1986,17,0,21.91,0.0,,0.0,1.29,0.0,0.59,🔴 高点击不出单,⛔ 大幅降价/暂停,-20%,$0.26,已积累17次点击仍无出单，转化严重不足
+DL_0_double lead for 2 dogs_FX,精准,double lead for 2 dogs,EXACT,78,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_dual dog leash tangle free large dogs_FX_0708_1117,精准,dual dog leash tangle free large dogs,EXACT,255,1,0,1.6,0.0,,0.0,1.6,0.0,0.04,⚪ 低点击不出单,↘ 降价,-10%,$0.16,无出单，降低无效花费
+DL_0_合集_double相关,double相关,double lead,EXACT,53,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_double相关,double相关,double leash attachment splitter,EXACT,6,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_double相关,double相关,double leash extension,EXACT,104,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_double相关,double相关,double leash extra small dog,EXACT,15,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_double相关,double相关,double leash for dogs,EXACT,641,5,0,5.35,0.0,,0.0,1.07,0.0,0.15,⚪ 低点击不出单,↘ 降价,-10%,$0.11,无出单，降低无效花费
+DL_0_合集_double相关,double相关,double leash no tangle,EXACT,191,2,0,2.54,0.0,,0.0,1.27,0.0,0.07,⚪ 低点击不出单,↘ 降价,-10%,$0.13,无出单，降低无效花费
+DL_0_合集_double相关,double相关,double no tangle leash,EXACT,53,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_double相关,double相关,double non tangle leash,EXACT,27,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_double相关,double相关,double sided leash,EXACT,3,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_double相关,double相关,double slip lead,EXACT,36,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_double相关,double相关,double y leash,EXACT,1,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_double相关,double相关,leash double,EXACT,68,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_double相关,double相关,light double dog leash,EXACT,5,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_double相关,double相关,double dog harnesses leashes,EXACT,20,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_double相关,double相关,double dog leash adjustable,EXACT,85,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_double相关,double相关,double dog leash coupler,EXACT,467,3,0,3.07,0.0,,0.0,1.02,0.0,0.08,⚪ 低点击不出单,↘ 降价,-10%,$0.10,无出单，降低无效花费
+DL_0_合集_double相关,double相关,double dog leash extension,EXACT,125,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_double相关,double相关,double dog leash for large dogs,EXACT,295,3,0,3.81,0.0,,0.0,1.27,0.0,0.1,⚪ 低点击不出单,↘ 降价,-10%,$0.13,无出单，降低无效花费
+DL_0_合集_double相关,double相关,double dog leash lightweight,EXACT,16,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_double相关,double相关,double dog leash no tangle adjustable,EXACT,13,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_double相关,double相关,double dog leash small dogs,EXACT,792,5,0,4.5,0.0,,0.0,0.9,0.0,0.12,⚪ 低点击不出单,↘ 降价,-10%,$0.09,无出单，降低无效花费
+DL_0_合集_double相关,double相关,double dog leashes,EXACT,207,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_double相关,double相关,double dog tie out,EXACT,73,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_double相关,double相关,double doggy leash,EXACT,0,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_double相关,double相关,double handle dog leash with coupler,EXACT,0,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_double相关,double相关,double latch leash,EXACT,75,1,0,0.9,0.0,,0.0,0.9,0.0,0.02,⚪ 低点击不出单,↘ 降价,-10%,$0.09,无出单，降低无效花费
+DL_0_合集_double相关,double相关,lightweight double leash for dogs,EXACT,2,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_double相关,double相关,no tangle double dog lead,EXACT,0,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_double相关,double相关,non tangle double dog leash,EXACT,65,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_double相关,double相关,retractable dog leash double,EXACT,105,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_double相关,double相关,small dog double leash,EXACT,200,5,0,5.25,0.0,,0.0,1.05,0.0,0.14,⚪ 低点击不出单,↘ 降价,-10%,$0.11,无出单，降低无效花费
+DL_0_合集_double相关,double相关,small dog double leash no tangle,EXACT,166,4,0,3.52,0.0,,0.0,0.88,0.0,0.1,⚪ 低点击不出单,↘ 降价,-10%,$0.09,无出单，降低无效花费
+DL_0_合集_double相关,double相关,swivel double dog leash,EXACT,60,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_double相关,double相关,tangle free double dog leash,EXACT,196,1,0,1.27,0.0,,0.0,1.27,0.0,0.03,⚪ 低点击不出单,↘ 降价,-10%,$0.13,无出单，降低无效花费
+DL_0_合集_double相关,double相关,timberwolf alpine dog leash double,EXACT,2,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_double相关,double相关,youthink double dog leash,EXACT,102,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_dual相关,dual相关,adjustable dual dog leash no tangle,EXACT,1,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_dual相关,dual相关,dual dog lead,EXACT,1,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_dual相关,dual相关,dual dog leash belt,EXACT,1,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_dual相关,dual相关,dual dog leash for big dogs,EXACT,4,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_dual相关,dual相关,dual dog leash for small dogs,EXACT,509,4,0,3.81,0.0,,0.0,0.95,0.0,0.1,⚪ 低点击不出单,↘ 降价,-10%,$0.10,无出单，降低无效花费
+DL_0_合集_dual相关,dual相关,dual dog leash tangle free,EXACT,82,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_dual相关,dual相关,dual swivel dog leash,EXACT,37,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_dual相关,dual相关,lightweight dual dog leash,EXACT,0,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_dual相关,dual相关,no tangle dual leash,EXACT,38,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_duo相关,duo相关,duo dog leash,EXACT,8,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_duo相关,duo相关,duo dog leash tangle free,EXACT,12,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_other相关,other,coupling straps for dog leash,EXACT,6,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_other相关,other,dog leash multipack,EXACT,203,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_other相关,other,dog leash swivel,EXACT,153,1,0,0.93,0.0,,0.0,0.93,0.0,0.03,⚪ 低点击不出单,↘ 降价,-10%,$0.09,无出单，降低无效花费
+DL_0_合集_other相关,other,dog leash y,EXACT,148,1,0,1.2,0.0,,0.0,1.2,0.0,0.03,⚪ 低点击不出单,↘ 降价,-10%,$0.12,无出单，降低无效花费
+DL_0_合集_other相关,other,duel leash,EXACT,11,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_other相关,other,front and back clip dog leash,EXACT,4,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_other相关,other,leash for toy poodles,EXACT,4,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_other相关,other,lettuce pets leash,EXACT,48,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_other相关,other,multidog walking leash,EXACT,8,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_other相关,other,tandem dog leash for small dogs,EXACT,525,5,0,5.869999999999999,0.0,,0.0,1.17,0.0,0.16,⚪ 低点击不出单,↘ 降价,-10%,$0.12,无出单，降低无效花费
+DL_0_合集_other相关,other,tandem dog leash no tangle,EXACT,414,2,0,1.82,0.0,,0.0,0.91,0.0,0.05,⚪ 低点击不出单,↘ 降价,-10%,$0.09,无出单，降低无效花费
+DL_0_合集_other相关,other,tandem leash,EXACT,254,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_other相关,other,y leash,EXACT,0,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_splitter coupler相关,splitter coupler,coupler dog,EXACT,98,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_splitter coupler相关,splitter coupler,dog coupler,EXACT,419,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_splitter coupler相关,splitter coupler,dog leash couple,EXACT,20,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_splitter coupler相关,splitter coupler,dog leash coupler no tangle,EXACT,75,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_splitter coupler相关,splitter coupler,dog leash coupler swivel,EXACT,61,1,0,1.26,0.0,,0.0,1.26,0.0,0.03,⚪ 低点击不出单,↘ 降价,-10%,$0.13,无出单，降低无效花费
+DL_0_合集_splitter coupler相关,splitter coupler,dog leash splitter with handle,EXACT,43,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_splitter coupler相关,splitter coupler,dog splitter leash,EXACT,133,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_splitter coupler相关,splitter coupler,leash coupler dogs,EXACT,4,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_splitter coupler相关,splitter coupler,leash splitter for small dogs,EXACT,99,1,0,0.7,0.0,,0.0,0.7,0.0,0.02,⚪ 低点击不出单,↘ 降价,-10%,$0.07,无出单，降低无效花费
+DL_0_合集_splitter coupler相关,splitter coupler,no tangle leash splitter,EXACT,69,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_splitter coupler相关,splitter coupler,split leash for dogs,EXACT,39,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_splitter coupler相关,splitter coupler,split leash for small dogs,EXACT,42,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_two相关,two相关,adjustable two dog leash,EXACT,27,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_two相关,two相关,dog leash for two,EXACT,331,1,0,0.89,0.0,,0.0,0.89,0.0,0.02,⚪ 低点击不出单,↘ 降价,-10%,$0.09,无出单，降低无效花费
+DL_0_合集_two相关,two相关,dog leash small dogs two dogs,EXACT,5,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_two相关,two相关,dog leash to walk two dogs,EXACT,94,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_two相关,two相关,dog leash two,EXACT,164,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_two相关,two相关,lead for two dogs,EXACT,31,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_two相关,two相关,leash for two digs,EXACT,10,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_2相关,2相关,leash attachment for 2 dogs,EXACT,123,2,0,2.05,0.0,,0.0,1.02,0.0,0.06,⚪ 低点击不出单,↘ 降价,-10%,$0.10,无出单，降低无效花费
+DL_0_合集_2相关,2相关,leash for dog walking 2 dogs,EXACT,5,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_2相关,2相关,leash splitter for 2 large dogs,EXACT,600,5,0,4.390000000000001,0.0,,0.0,0.88,0.0,0.12,⚪ 低点击不出单,↘ 降价,-10%,$0.09,无出单，降低无效花费
+DL_0_合集_2相关,2相关,leash splitter for 2 small dogs,EXACT,976,3,0,2.83,0.0,,0.0,0.94,0.0,0.08,⚪ 低点击不出单,↘ 降价,-10%,$0.09,无出单，降低无效花费
+DL_0_合集_2相关,2相关,leash with 2,EXACT,43,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_2相关,2相关,leash with 2 clips,EXACT,165,2,0,2.05,0.0,,0.0,1.02,0.0,0.06,⚪ 低点击不出单,↘ 降价,-10%,$0.10,无出单，降低无效花费
+DL_0_合集_2相关,2相关,one leash to walk 2 dogs,EXACT,2,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_2相关,2相关,split dog leash for 2 dogs,EXACT,2002,22,0,18.75,0.0,,0.0,0.85,0.0,0.51,🔴 高点击不出单,⛔ 大幅降价/暂停,-20%,$0.17,已积累22次点击仍无出单，转化严重不足
+DL_0_合集_2相关,2相关,swivel dog leash for 2 dogs,EXACT,179,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_2相关,2相关,y leash for walking 2 dogs,EXACT,243,2,0,2.54,0.0,,0.0,1.27,0.0,0.07,⚪ 低点击不出单,↘ 降价,-10%,$0.13,无出单，降低无效花费
+DL_0_合集_double相关,double相关,adjustable double leash for small dogs,EXACT,9,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_double相关,double相关,adjustable length double dog leash,EXACT,16,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_double相关,double相关,dog double leash no tangle,EXACT,228,2,0,1.8,0.0,,0.0,0.9,0.0,0.05,⚪ 低点击不出单,↘ 降价,-10%,$0.09,无出单，降低无效花费
+DL_0_合集_double相关,double相关,dog leash double clip,EXACT,1120,5,0,5.98,0.0,,0.0,1.2,0.0,0.16,⚪ 低点击不出单,↘ 降价,-10%,$0.12,无出单，降低无效花费
+DL_0_合集_double相关,double相关,dog leash double ended,EXACT,162,4,0,3.97,0.0,,0.0,0.99,0.0,0.11,⚪ 低点击不出单,↘ 降价,-10%,$0.10,无出单，降低无效花费
+DL_0_合集_two相关,two相关,leash with two hooks,EXACT,93,1,0,0.99,0.0,,0.0,0.99,0.0,0.03,⚪ 低点击不出单,↘ 降价,-10%,$0.10,无出单，降低无效花费
+DL_0_合集_two相关,two相关,swivel dog leash for two dogs,EXACT,20,1,0,0.99,0.0,,0.0,0.99,0.0,0.03,⚪ 低点击不出单,↘ 降价,-10%,$0.10,无出单，降低无效花费
+DL_0_合集_two相关,two相关,tangle free leash for two dogs,EXACT,41,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_two相关,two相关,two dog lead,EXACT,264,2,0,1.98,0.0,,0.0,0.99,0.0,0.05,⚪ 低点击不出单,↘ 降价,-10%,$0.10,无出单，降低无效花费
+DL_0_合集_two相关,two相关,two dog lead no tangle,EXACT,298,1,0,0.99,0.0,,0.0,0.99,0.0,0.03,⚪ 低点击不出单,↘ 降价,-10%,$0.10,无出单，降低无效花费
+DL_0_合集_two相关,two相关,two dog leash adapter,EXACT,56,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_two相关,two相关,two dog leash hands free,EXACT,162,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_two相关,two相关,two dog leash no tangle retractable,EXACT,185,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_two相关,two相关,two dog leash small dog,EXACT,198,2,0,2.02,0.0,,0.0,1.01,0.0,0.05,⚪ 低点击不出单,↘ 降价,-10%,$0.10,无出单，降低无效花费
+DL_0_合集_two相关,two相关,two dog no tangle,EXACT,142,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_two相关,two相关,two dogs one leash,EXACT,182,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_two相关,two相关,two handled dog leash,EXACT,1744,3,0,2.7,0.0,,0.0,0.9,0.0,0.07,⚪ 低点击不出单,↘ 降价,-10%,$0.09,无出单，降低无效花费
+DL_0_合集_two相关,two相关,two in one dog leash,EXACT,438,1,0,0.9,0.0,,0.0,0.9,0.0,0.02,⚪ 低点击不出单,↘ 降价,-10%,$0.09,无出单，降低无效花费
+DL_0_合集_two相关,two相关,two point leash,EXACT,3595,25,0,24.62,0.0,,0.0,0.98,0.0,0.67,🔴 高点击不出单,⛔ 大幅降价/暂停,-20%,$0.20,已积累25次点击仍无出单，转化严重不足
+DL_0_合集_two相关,two相关,two small dog leash no tangle,EXACT,223,2,0,1.98,0.0,,0.0,0.99,0.0,0.05,⚪ 低点击不出单,↘ 降价,-10%,$0.10,无出单，降低无效花费
+DL_0_合集_two相关,two相关,two way dog leash,EXACT,381,2,0,1.8900000000000001,0.0,,0.0,0.94,0.0,0.05,⚪ 低点击不出单,↘ 降价,-10%,$0.09,无出单，降低无效花费
+DL_0_合集_two相关多词,two相关多词,double dog leash for two large dogs,EXACT,455,4,0,3.8,0.0,,0.0,0.95,0.0,0.1,⚪ 低点击不出单,↘ 降价,-10%,$0.10,无出单，降低无效花费
+DL_0_合集_two相关多词,two相关多词,double leash attachment for two dogs,EXACT,209,2,0,2.52,0.0,,0.0,1.26,0.0,0.07,⚪ 低点击不出单,↘ 降价,-10%,$0.13,无出单，降低无效花费
+DL_0_合集_two相关多词,two相关多词,double leash for 2 medium dogs,EXACT,2,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_two相关多词,two相关多词,double leash for two dogs retractable,EXACT,661,2,0,1.72,0.0,,0.0,0.86,0.0,0.05,⚪ 低点击不出单,↘ 降价,-10%,$0.09,无出单，降低无效花费
+DL_0_合集_two相关多词,two相关多词,double leash for two small dogs no tangle,EXACT,229,11,0,13.03,0.0,,0.0,1.18,0.0,0.35,🔴 高点击不出单,⛔ 大幅降价/暂停,-20%,$0.24,已积累11次点击仍无出单，转化严重不足
+DL_0_合集_two相关多词,two相关多词,dual leads for 2 dogs,EXACT,7,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_two相关多词,two相关多词,dual leash attachment for 2 dogs,EXACT,81,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_two相关多词,two相关多词,dual walking leash for two dogs,EXACT,76,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_长尾词(7),7以上,dog leash for 2 small dogs tangle free,EXACT,91,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_长尾词(7),7以上,double dog leash for two dogs no tangle,EXACT,381,1,0,1.04,0.0,,0.0,1.04,0.0,0.03,⚪ 低点击不出单,↘ 降价,-10%,$0.10,无出单，降低无效花费
+DL_0_合集_长尾词(7),7以上,two point control dog leash for one dog,EXACT,371,1,0,0.75,0.0,,0.0,0.75,0.0,0.02,⚪ 低点击不出单,↘ 降价,-10%,$0.08,无出单，降低无效花费
+DL_0_合集_长尾词(7),长尾词7,adjustable double dog leash for two dogs,EXACT,6,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_长尾词(7),长尾词7,dog leash splitter 2 dogs heavy duty,EXACT,318,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_长尾词(7),长尾词7,dog leash splitter for two large dogs,EXACT,165,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_长尾词(7),长尾词7,double dog leash no tangle small dogs,EXACT,144,1,0,0.84,0.0,,0.0,0.84,0.0,0.02,⚪ 低点击不出单,↘ 降价,-10%,$0.08,无出单，降低无效花费
+DL_0_合集_长尾词(7),长尾词7,double lead dog leash for small dogs,EXACT,5,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_长尾词(7),长尾词7,dual dog leash with tangle-free small dog,EXACT,15,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_长尾词(7),长尾词7,no tangle double dog leash small dogs,EXACT,371,1,0,0.84,0.0,,0.0,0.84,0.0,0.02,⚪ 低点击不出单,↘ 降价,-10%,$0.08,无出单，降低无效花费
+DL_0_合集_长尾词(7),长尾词7,two dog leash no tangle heavy duty,EXACT,457,1,0,1.13,0.0,,0.0,1.13,0.0,0.03,⚪ 低点击不出单,↘ 降价,-10%,$0.11,无出单，降低无效花费
+DL_0_合集_长尾词(7),长尾词7,two point control leash for dog harness,EXACT,213,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_长尾词(7),长尾词7,two point control leash for small dogs,EXACT,3,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_长尾词(7),长尾词7,y leash for walking 2 large dogs,EXACT,64,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_2相关,2相关,2 point control leash,EXACT,340,9,0,8.97,0.0,,0.0,1.0,0.0,0.24,🔴 高点击不出单,⛔ 大幅降价/暂停,-20%,$0.20,已积累9次点击仍无出单，转化严重不足
+DL_0_合集_2相关,2相关,2 point control leash for dogs,EXACT,48,1,0,0.86,0.0,,0.0,0.86,0.0,0.02,⚪ 低点击不出单,↘ 降价,-10%,$0.09,无出单，降低无效花费
+DL_0_合集_2相关,2相关,2 point leash for 1 dog,EXACT,234,9,0,9.51,0.0,,0.0,1.06,0.0,0.26,🔴 高点击不出单,⛔ 大幅降价/暂停,-20%,$0.21,已积累9次点击仍无出单，转化严重不足
+DL_0_合集_2相关,2相关,2 point training leash,EXACT,47,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_2相关,2相关,2 way dog coupler,EXACT,212,2,0,1.9000000000000001,0.0,,0.0,0.95,0.0,0.05,⚪ 低点击不出单,↘ 降价,-10%,$0.10,无出单，降低无效花费
+DL_0_合集_2相关,2相关,2dog leash no tangle,EXACT,285,1,0,0.86,0.0,,0.0,0.86,0.0,0.02,⚪ 低点击不出单,↘ 降价,-10%,$0.09,无出单，降低无效花费
+DL_0_合集_2相关,2相关,anti tangle 2 dog leash,EXACT,61,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_2相关,2相关,dog coupler for 2 small dogs,EXACT,296,1,0,1.26,0.0,,0.0,1.26,0.0,0.03,⚪ 低点击不出单,↘ 降价,-10%,$0.13,无出单，降低无效花费
+DL_0_合集_2相关,2相关,dog leash 2 dogs,EXACT,376,4,0,3.69,0.0,,0.0,0.92,0.0,0.1,⚪ 低点击不出单,↘ 降价,-10%,$0.09,无出单，降低无效花费
+DL_0_合集_2相关,2相关,dog leash attachment for 2 dogs,EXACT,38,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_2相关,2相关,dog leash for 2,EXACT,9,1,0,0.86,0.0,,0.0,0.86,0.0,0.02,⚪ 低点击不出单,↘ 降价,-10%,$0.09,无出单，降低无效花费
+DL_0_合集_2相关,2相关,dog leash for 2 dogs small,EXACT,67,1,0,0.68,0.0,,0.0,0.68,0.0,0.02,⚪ 低点击不出单,↘ 降价,-10%,$0.07,无出单，降低无效花费
+DL_0_合集_2相关,2相关,leash adapter for 2 dogs,EXACT,39,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_2_chew proof dog leash,Exact,chew proof dog leash,EXACT,598,3,0,3.24,0.0,,0.0,1.08,0.0,0.09,⚪ 低点击不出单,↘ 降价,-10%,$0.11,无出单，降低无效花费
+DL_3_2 dog leash tangle free for large dogs_FX_0113,精准,2 dog leash tangle free for large dogs,EXACT,600,7,0,7.21,0.0,,0.0,1.03,0.0,0.2,⚪ 低点击不出单,↘ 降价,-10%,$0.10,无出单，降低无效花费
+DL_3_dual leashes for 2 dogs no tangle,精准,dual leashes for 2 dogs no tangle,EXACT,468,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_3_two dog leash_FX_0624,精准,two dog leash,EXACT,727,2,0,1.4,0.0,,0.0,0.7,0.0,0.04,⚪ 低点击不出单,↘ 降价,-10%,$0.07,无出单，降低无效花费
+DL_5_double leash for no pull harness_DW_捡漏,精准,double leash for no pull harness,EXACT,19,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_5_double retractable dog leash for two dogs,Exact,double retractable dog leash for two dogs,EXACT,868,2,0,2.08,0.0,,0.0,1.04,0.0,0.06,⚪ 低点击不出单,↘ 降价,-10%,$0.10,无出单，降低无效花费
+DL_5_dual dog leash no tangle,Exact,dual dog leash no tangle,EXACT,1191,3,0,3.3899999999999997,0.0,,0.0,1.13,0.0,0.09,⚪ 低点击不出单,↘ 降价,-10%,$0.11,无出单，降低无效花费
+A-双头绳定位,双头绳定位,"asin-expanded=""B0D634Z237""",-,60,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_two dog leash splitter_FX_1117,精准,two dog leash splitter,EXACT,485,1,0,1.2,0.0,,0.0,1.2,0.0,0.03,⚪ 低点击不出单,↘ 降价,-10%,$0.12,无出单，降低无效花费
+DL_0_two point dog leash_DW_1117,精准,two point dog leash,EXACT,732,9,0,9.88,0.0,,0.0,1.1,0.0,0.27,🔴 高点击不出单,⛔ 大幅降价/暂停,-20%,$0.22,已积累9次点击仍无出单，转化严重不足
+DL_0_合集_2相关,2相关,2 dog lead splitter,EXACT,152,3,0,2.9899999999999998,0.0,,0.0,1.0,0.0,0.08,⚪ 低点击不出单,↘ 降价,-10%,$0.10,无出单，降低无效花费
+DL_0_合集_2相关,2相关,2 dog leash small dogs,EXACT,120,1,0,0.86,0.0,,0.0,0.86,0.0,0.02,⚪ 低点击不出单,↘ 降价,-10%,$0.09,无出单，降低无效花费
+DL_0_合集_2相关,2相关,2 dog swivel leash,EXACT,27,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_2相关,2相关,2 dog tie out,EXACT,108,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_2相关,2相关,2 hounds design freedom no-pull leash,EXACT,13,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_2相关,2相关,2 in 1 dog leash for small dogs,EXACT,6,1,0,1.27,0.0,,0.0,1.27,0.0,0.03,⚪ 低点击不出单,↘ 降价,-10%,$0.13,无出单，降低无效花费
+DL_0_合集_2相关,2相关,2 lead dog leash no tangle,EXACT,24,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_合集_2相关,2相关,2 leashes in one,EXACT,13,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_4_multi dog leash_DW_1117,Exact,multi dog leash,EXACT,306,5,0,4.62,0.0,,0.0,0.92,0.0,0.13,⚪ 低点击不出单,↘ 降价,-10%,$0.09,无出单，降低无效花费
+DL_4_tangle free dog leash for 2 dogs,Exact,tangle free dog leash for 2 dogs,EXACT,991,4,0,3.45,0.0,,0.0,0.86,0.0,0.09,⚪ 低点击不出单,↘ 降价,-10%,$0.09,无出单，降低无效花费
+A-双头绳定位,双头绳定位,"asin-expanded=""B0CHJ1M17S""",-,3,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_5_small dog leashes,Exact,small dog leashes,EXACT,1619,7,0,7.0600000000000005,0.0,,0.0,1.01,0.0,0.19,⚪ 低点击不出单,↘ 降价,-10%,$0.10,无出单，降低无效花费
+DL_5_tandem dog leash,Exact,tandem dog leash,EXACT,119,2,0,1.29,0.0,,0.0,0.64,0.0,0.03,⚪ 低点击不出单,↘ 降价,-10%,$0.06,无出单，降低无效花费
+DL_5_tangle free dog leash for 2 dogs_DW_1117,精准,tangle free dog leash for 2 dogs,EXACT,6,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_duel dog leash for 2_UD_1117,精准,duel dog leash for 2,EXACT,418,2,0,2.24,0.0,,0.0,1.12,0.0,0.06,⚪ 低点击不出单,↘ 降价,-10%,$0.11,无出单，降低无效花费
+DL_0_leash coupler for 2 dogs_FX_0624_1117,精准,leash coupler for 2 dogs,EXACT,1760,5,0,5.2,0.0,,0.0,1.04,0.0,0.14,⚪ 低点击不出单,↘ 降价,-10%,$0.10,无出单，降低无效花费
+A-双头绳定位,双头绳定位,"asin-expanded=""B072BF547Q""",-,40,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_0_pet dreamland two dog leash no tangle,精准,pet dreamland two dog leash no tangle,EXACT,15,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+A-双头绳定位,双头绳定位,"asin-expanded=""B00589G9YY""",-,28,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
+DL_5_leash for 2 dogs no tangle,Exact,leash for 2 dogs no tangle,EXACT,134,0,0,0.0,0.0,,,,0.0,0.0,— 无点击,观察,0%,$0.00,无流量，检查出价是否过低
