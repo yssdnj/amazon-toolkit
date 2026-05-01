@@ -188,7 +188,7 @@ def process_xlsx(input_file, output_file):
 
 def run():
     base_path = Path(__file__).resolve().parents[1]
-    data_dir = base_path / "data" / "weekly_report"
+    data_dir = base_path / "data" / "weekly_data_clean"
     input_dir = data_dir / "input"
     output_dir = data_dir / "output"
 

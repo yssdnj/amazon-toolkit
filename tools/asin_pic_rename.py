@@ -4,7 +4,7 @@ from pathlib import Path
 
 def run():
     base_path = Path(__file__).resolve().parents[1]
-    data_dir = base_path / "data" / "pic_rename"
+    data_dir = base_path / "data" / "asin_pic_rename"
     input_dir = data_dir / "input"
     output_dir = data_dir / "output"
 
