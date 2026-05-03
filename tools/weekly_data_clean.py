@@ -1,79 +1,121 @@
 import pandas as pd
 from pathlib import Path
 
+# ==============================================================================
+# 20260503修改：将 agg 字段列表、agg 字典、二级分组规则抽到模块级常量
+# 旧代码：agg 字典在 process_xlsx 函数内写了两遍（一级分组和二级分组各一份），
+#         subgroup_rules 也硬编码在函数内部
+# 新代码：统一定义为模块级常量，函数内直接引用，修改产品规则只需改这里
+# ==============================================================================
+
+# 需要 sum 聚合的原始数值列
+_AGG_COLS = [
+    '订单量', '销量', '销售额', '促销销量', '促销订单量', '促销销售额',
+    '退款量', '退款金额', '展示', '点击', '广告订单量', '广告花费', '广告销售额'
+]
+# 由 _AGG_COLS 自动生成 agg 字典，避免重复书写
+# 旧代码：手动写了两份 {'订单量':'sum', '销量':'sum', ...} 字典
+_AGG_DICT = {col: 'sum' for col in _AGG_COLS}
+
+# 二级分组规则：各 listing标签 下按品名关键词模糊匹配
+# 旧代码：此字典硬编码在 process_xlsx 函数内部，不易维护
+SUBGROUP_RULES = {
+    'SL': ['3.6FT', '5.0FT', '5.5FT'],
+    'Toy': ['Short w/oBall 1Pack', 'Long w/oBall 1Pack', 'w/Ball 1Pack', 'Long w/oBall 2Pack'],
+    'ToyDH': ['1Pack', '2Pack'],
+    'DL': ['w/oHandle AL', 'w/Handle AL', 'w/oHandle ZN', 'w/Handle ZN'],
+    'DSL': ['3FT', '6FT'],
+    'MFL': ['AL', 'ZN'],
+    'SFM': ['SFM 1', 'SFM 2', 'SFM 3']
+}
+
+
+# ==============================================================================
+# 20260503修改：派生指标计算抽成独立函数，消除一级/二级分组中的重复逻辑
+# 旧代码：退款率/CPC/促销折扣 的计算在 grouped 和 sub_group 两处各写了一遍
+# 新代码：统一调用 _calc_derived()，DataFrame 和 dict 两种形态分别处理
+# ==============================================================================
+
+def _calc_derived_df(df):
+    """对 DataFrame 做向量化派生指标计算（替代逐行 apply+lambda，性能更好）"""
+    # 旧代码（逐行 apply，数据量大时慢）：
+    # grouped['退款率'] = grouped.apply(lambda r: r['退款量']/r['销量'] if r['销量']>0 else 0, axis=1)
+    # grouped['CPC']   = grouped.apply(lambda r: r['广告花费']/r['点击'] if r['点击']>0 else 0, axis=1)
+    # grouped['促销折扣'] = grouped.apply(lambda r: r['促销销售额']/r['促销销量'] if r['促销销量']>0 else 0, axis=1)
+    df['退款率'] = df['退款量'].div(df['销量'].replace(0, float('nan'))).fillna(0)
+    df['CPC'] = df['广告花费'].div(df['点击'].replace(0, float('nan'))).fillna(0)
+    df['促销折扣'] = df['促销销售额'].div(df['促销销量'].replace(0, float('nan'))).fillna(0)
+    return df
+
+
+def _calc_derived_dict(d):
+    """对二级分组汇总后的 dict 计算派生指标"""
+    # 旧代码（直接写在循环体内，与一级分组逻辑重复）：
+    # sub_group['退款率'] = sub_group['退款量']/sub_group['销量'] if sub_group['销量'] > 0 else 0
+    # sub_group['CPC']   = sub_group['广告花费']/sub_group['点击'] if sub_group['点击'] > 0 else 0
+    # sub_group['促销折扣'] = sub_group['促销销售额']/sub_group['促销销量'] if sub_group['促销销量'] > 0 else 0
+    d['退款率'] = d['退款量'] / d['销量'] if d['销量'] > 0 else 0
+    d['CPC'] = d['广告花费'] / d['点击'] if d['点击'] > 0 else 0
+    d['促销折扣'] = d['促销销售额'] / d['促销销量'] if d['促销销量'] > 0 else 0
+    return d
+
+
 def process_xlsx(input_file, output_file):
     # 读取数据
     df = pd.read_excel(input_file, dtype=str).fillna('')
-    
+
     # 列名清理，确保列名无空格
     df.columns = df.columns.str.strip()
-    
+
     # 必须确保这些列存在，否则报错
-    required_cols = ['listing标签','品名','订单量','销量','销售额','促销销量','促销订单量',
-                     '促销销售额','退款量','退款金额','展示','点击','广告订单量','广告花费','广告销售额']
+    required_cols = ['listing标签', '品名', '订单量', '销量', '销售额', '促销销量', '促销订单量',
+                     '促销销售额', '退款量', '退款金额', '展示', '点击', '广告订单量', '广告花费', '广告销售额']
     for col in required_cols:
         if col not in df.columns:
             raise ValueError(f"缺少必要列: {col}")
 
-    # 转换数值列为数值类型（先去逗号再转换）
+    # ==============================================================================
+    # 20260503修改：to_num 中空字符串处理改用语义更清晰的 fillna
+    # 旧代码：s = series.str.replace(',','').replace('', '0')
+    #         第二个 .replace 是 Series.replace（值替换），与前面的 str.replace 混用，语义不一致
+    # 新代码：统一用 .fillna('0') 补空，意图更明确
+    # ==============================================================================
     def to_num(series, is_int=False):
-        s = series.str.replace(',','').replace('', '0')
+        # 旧代码：s = series.str.replace(',','').replace('', '0')
+        s = series.str.replace(',', '').fillna('0').replace('', '0')
         if is_int:
             return pd.to_numeric(s, errors='coerce').fillna(0).astype(int)
         else:
             return pd.to_numeric(s, errors='coerce').fillna(0).astype(float)
-    
-    int_cols = ['订单量','销量','促销销量','促销订单量','退款量','展示','点击','广告订单量']
-    float_cols = ['销售额','促销销售额','退款金额','广告花费','广告销售额']
-    
+
+    int_cols = ['订单量', '销量', '促销销量', '促销订单量', '退款量', '展示', '点击', '广告订单量']
+    float_cols = ['销售额', '促销销售额', '退款金额', '广告花费', '广告销售额']
+
     for col in int_cols:
         df[col] = to_num(df[col].astype(str), True)
     for col in float_cols:
         df[col] = to_num(df[col].astype(str), False)
-    
+
     # 品名去空格
     df['品名'] = df['品名'].str.strip()
     df['listing标签'] = df['listing标签'].str.strip()
-    
+
     # 退款金额和广告花费转正数（绝对值）
     df['退款金额'] = df['退款金额'].abs()
     df['广告花费'] = df['广告花费'].abs()
-    
+
     # --- 一级分组：按 listing标签 ---
-    grouped = df.groupby('listing标签').agg({
-        '订单量':'sum',
-        '销量':'sum',
-        '销售额':'sum',
-        '促销销量':'sum',
-        '促销订单量':'sum',
-        '促销销售额':'sum',
-        '退款量':'sum',
-        '退款金额':'sum',
-        '展示':'sum',
-        '点击':'sum',
-        '广告订单量':'sum',
-        '广告花费':'sum',
-        '广告销售额':'sum'
-    }).reset_index()
-    
-    # 计算派生列
-    grouped['退款率'] = grouped.apply(lambda r: r['退款量']/r['销量'] if r['销量']>0 else 0, axis=1)
-    grouped['CPC'] = grouped.apply(lambda r: r['广告花费']/r['点击'] if r['点击']>0 else 0, axis=1)
-    grouped['促销折扣'] = grouped.apply(lambda r: r['促销销售额']/r['促销销量'] if r['促销销量']>0 else 0, axis=1)
-    
-    # --- 二级分组规则 ---
-    subgroup_rules = {
-        'SL': ['3.6FT', '5.0FT', '5.5FT'],
-        'Toy': ['Short w/oBall 1Pack', 'Long w/oBall 1Pack', 'w/Ball 1Pack', 'Long w/oBall 2Pack'],
-        'ToyDH': ['1Pack', '2Pack'],
-        'DL': ['w/oHandle AL', 'w/Handle AL','w/oHandle ZN','w/Handle ZN'],
-        'DSL': ['3FT', '6FT'],
-        'MFL': ['AL','ZN'],
-        'SFM': ['SFM 1', 'SFM 2', 'SFM 3']
-    }
-    
+    # 20260503修改：agg 字典改用模块级常量 _AGG_DICT，不再手动列举
+    # 旧代码：df.groupby('listing标签').agg({'订单量':'sum', '销量':'sum', ...（13列手写）})
+    grouped = df.groupby('listing标签').agg(_AGG_DICT).reset_index()
+
+    # 20260503修改：派生指标改用向量化函数，不再逐行 apply+lambda
+    grouped = _calc_derived_df(grouped)
+
+    # --- 二级分组：按品名规格 ---
+    # 20260503修改：subgroup_rules 改从模块级常量 SUBGROUP_RULES 读取
     subgroup_results = []
-    for listing_tag, names in subgroup_rules.items():
+    for listing_tag, names in SUBGROUP_RULES.items():
         df_filtered = df[df['listing标签'] == listing_tag]
         if df_filtered.empty:
             continue
@@ -83,48 +125,33 @@ def process_xlsx(input_file, output_file):
             df_sub = df_filtered[mask]
             if df_sub.empty:
                 continue
-            
-            sub_group = df_sub.agg({
-                '订单量':'sum',
-                '销量':'sum',
-                '销售额':'sum',
-                '促销销量':'sum',
-                '促销订单量':'sum',
-                '促销销售额':'sum',
-                '退款量':'sum',
-                '退款金额':'sum',
-                '展示':'sum',
-                '点击':'sum',
-                '广告订单量':'sum',
-                '广告花费':'sum',
-                '广告销售额':'sum'
-            }).to_dict()
-            
-            # 计算派生列
-            sub_group['退款率'] = sub_group['退款量']/sub_group['销量'] if sub_group['销量'] > 0 else 0
-            sub_group['CPC'] = sub_group['广告花费']/sub_group['点击'] if sub_group['点击'] > 0 else 0
-            sub_group['促销折扣'] = sub_group['促销销售额']/sub_group['促销销量'] if sub_group['促销销量'] > 0 else 0
-            
-            # 绝对值
+
+            # 20260503修改：agg 字典改用模块级常量 _AGG_DICT
+            sub_group = df_sub.agg(_AGG_DICT).to_dict()
+
+            # 绝对值（二级分组原始数据可能含负数，与一级分组对齐）
             sub_group['退款金额'] = abs(sub_group['退款金额'])
             sub_group['广告花费'] = abs(sub_group['广告花费'])
-            
+
+            # 20260503修改：派生指标改用统一函数，不再重复写三行计算逻辑
+            sub_group = _calc_derived_dict(sub_group)
+
             # 填充标签
             sub_group['listing标签'] = listing_tag
             sub_group['品名'] = name
-            
+
             subgroup_results.append(sub_group)
-    
+
     df_subgroups_all = pd.DataFrame(subgroup_results)
-    
+
     # --- 数据格式化 ---
     def format_data(df_out):
         # 整数列
-        for col in ['订单量','销量','促销销量','促销订单量','退款量','展示','点击','广告订单量']:
+        for col in ['订单量', '销量', '促销销量', '促销订单量', '退款量', '展示', '点击', '广告订单量']:
             if col in df_out.columns:
                 df_out[col] = df_out[col].fillna(0).astype(int)
         # 保留两位小数列
-        for col in ['销售额','促销销售额','促销折扣','退款金额','广告花费','广告销售额','CPC']:
+        for col in ['销售额', '促销销售额', '促销折扣', '退款金额', '广告花费', '广告销售额', 'CPC']:
             if col in df_out.columns:
                 df_out[col] = df_out[col].fillna(0).round(2)
         # 百分比列，保留两位小数
@@ -133,11 +160,10 @@ def process_xlsx(input_file, output_file):
             # df_out['退款率'] = df_out['退款率'] * 100  # 转换成百分比
             # df_out['退款率'] = df_out['退款率'].round(2)
         return df_out
-    
+
     grouped = format_data(grouped)
     df_subgroups_all = format_data(df_subgroups_all)
-    
-    
+
     # --- 导出 ---
     # 指定导出列顺序
     export_columns = [
@@ -153,20 +179,20 @@ def process_xlsx(input_file, output_file):
         grouped_export.to_excel(writer, sheet_name='标签汇总sht', index=False)
         if not df_subgroups_all_export.empty:
             df_subgroups_all_export.to_excel(writer, sheet_name='标签品名汇总sht', index=False)
-        
+
         # 设置Excel格式（整数、浮点、百分比）
-        workbook  = writer.book
+        workbook = writer.book
         int_fmt = workbook.add_format({'num_format': '0'})
         float_fmt = workbook.add_format({'num_format': '0.00'})
         pct_fmt = workbook.add_format({'num_format': '0.00%'})
-        
+
         # 格式化第一个sheet
         ws1 = writer.sheets['标签汇总sht']
         fmt_map = {
-            '订单量': int_fmt, '销量': int_fmt,  '销售额': float_fmt,
-            '促销销量': int_fmt, '促销订单量': int_fmt, '促销销售额': float_fmt, '促销折扣': float_fmt, 
-            '退款量': int_fmt, '退款率': pct_fmt,'退款金额': float_fmt,
-            '展示': int_fmt, '点击': int_fmt, '广告订单量': int_fmt, 
+            '订单量': int_fmt, '销量': int_fmt, '销售额': float_fmt,
+            '促销销量': int_fmt, '促销订单量': int_fmt, '促销销售额': float_fmt, '促销折扣': float_fmt,
+            '退款量': int_fmt, '退款率': pct_fmt, '退款金额': float_fmt,
+            '展示': int_fmt, '点击': int_fmt, '广告订单量': int_fmt,
             '广告花费': float_fmt, '广告销售额': float_fmt, 'CPC': float_fmt
         }
         for col_num, col_name in enumerate(grouped_export.columns):
@@ -174,7 +200,7 @@ def process_xlsx(input_file, output_file):
                 ws1.set_column(col_num, col_num, 15, fmt_map[col_name])
             else:
                 ws1.set_column(col_num, col_num, 20)
-        
+
         # 格式化第二个sheet
         if not df_subgroups_all_export.empty:
             ws2 = writer.sheets['标签品名汇总sht']
@@ -185,6 +211,7 @@ def process_xlsx(input_file, output_file):
                     ws2.set_column(col_num, col_num, 20)
 
     print(f"处理完成，结果已保存至 {output_file}")
+
 
 def run():
     base_path = Path(__file__).resolve().parents[1]
@@ -213,8 +240,3 @@ def run():
 
     process_xlsx(input_path, output_path)
     print(f"✅ 周报已生成：{output_path}")
-
-
-
-
-
