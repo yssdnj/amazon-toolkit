@@ -7,7 +7,7 @@ TOOLS = {
     "2": ("周报数据写入（需先运行第1步）", "amazon_toolkit.tools.weekly_report_append"),
     "3": ("Excel 行复制 N 次", "amazon_toolkit.tools.excel_row_repeat"),
     "4": ("ASIN图片重命名", "amazon_toolkit.tools.asin_pic_rename"),
-    "5": ("广告批量更新(XX)", "amazon_toolkit.tools.ad_bulk_update"),
+    "5": ("广告批量更新Bid", "amazon_toolkit.tools.ad_bulk_update"),
 }
 
 
