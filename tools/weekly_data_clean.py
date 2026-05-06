@@ -60,7 +60,45 @@ def _calc_derived_dict(d):
     return d
 
 
-def process_xlsx(input_file, output_file):
+# 父ASIN 文件中需要聚合的六列
+_PARENT_ASIN_COLS = [
+    'Sessions-Browser', 'Sessions-Mobile', 'Sessions-Total',
+    'PV-Browser', 'PV-Mobile', 'PV-Total'
+]
+
+
+def _load_parent_asin(parent_asin_file) -> pd.DataFrame:
+    """
+    读取父ASIN文件，按 listing标签 聚合六列流量数据。
+    - 跳过 listing标签 为空的行
+    - 返回以 listing标签 为索引的 DataFrame
+    - 文件不存在时返回空 DataFrame（调用方按全部留空处理）
+    """
+    if parent_asin_file is None or not Path(parent_asin_file).exists():
+        return pd.DataFrame(columns=_PARENT_ASIN_COLS)
+
+    df = pd.read_excel(parent_asin_file)
+    df.columns = df.columns.str.strip()
+
+    # 跳过 listing标签 为空的行
+    df = df[df['listing标签'].notna() & (df['listing标签'].astype(str).str.strip() != '')]
+    if df.empty:
+        return pd.DataFrame(columns=_PARENT_ASIN_COLS)
+
+    df['listing标签'] = df['listing标签'].astype(str).str.strip()
+
+    # 六列转数值
+    for col in _PARENT_ASIN_COLS:
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0)
+        else:
+            df[col] = 0
+
+    aggregated = df.groupby('listing标签')[_PARENT_ASIN_COLS].sum()
+    return aggregated  # index = listing标签
+
+
+def process_xlsx(input_file, output_file, parent_asin_file=None):
     # 读取数据
     df = pd.read_excel(input_file, dtype=str).fillna('')
 
@@ -111,6 +149,21 @@ def process_xlsx(input_file, output_file):
 
     # 20260503修改：派生指标改用向量化函数，不再逐行 apply+lambda
     grouped = _calc_derived_df(grouped)
+
+    # --- 合并父ASIN流量数据（Sessions / PV）---
+    # 20260506新增：读取父ASIN文件，按 listing标签 聚合后 left join 到一级汇总
+    # 父ASIN文件不存在时 df_parent 为空，六列全部留空（NaN）
+    df_parent = _load_parent_asin(parent_asin_file)
+    if not df_parent.empty:
+        grouped = grouped.join(df_parent, on='listing标签', how='left')
+        print(f"✅ 已合并父ASIN流量数据，匹配标签: {df_parent.index.tolist()}")
+    else:
+        for col in _PARENT_ASIN_COLS:
+            grouped[col] = None
+        if parent_asin_file is not None:
+            print(f"⚠️ 父ASIN文件无有效数据，六列留空")
+        else:
+            print(f"ℹ️ 未提供父ASIN文件，六列留空")
 
     # --- 二级分组：按品名规格 ---
     # 20260503修改：subgroup_rules 改从模块级常量 SUBGROUP_RULES 读取
@@ -166,9 +219,12 @@ def process_xlsx(input_file, output_file):
 
     # --- 导出 ---
     # 指定导出列顺序
+    # 20260506新增：标签汇总sht 末尾追加六列父ASIN流量数据
     export_columns = [
         'listing标签', '品名', '销量', '订单量', '销售额', '促销销量', '促销订单量', '促销销售额', '促销折扣',
-        '退款量', '退款率', '退款金额', '展示', '点击', '广告订单量', '广告花费', '广告销售额', 'CPC'
+        '退款量', '退款率', '退款金额', '展示', '点击', '广告订单量', '广告花费', '广告销售额', 'CPC',
+        'Sessions-Browser', 'Sessions-Mobile', 'Sessions-Total',
+        'PV-Browser', 'PV-Mobile', 'PV-Total'
     ]
 
     # 只保留并按顺序导出指定列（如果有些列不存在则自动跳过）
@@ -193,7 +249,10 @@ def process_xlsx(input_file, output_file):
             '促销销量': int_fmt, '促销订单量': int_fmt, '促销销售额': float_fmt, '促销折扣': float_fmt,
             '退款量': int_fmt, '退款率': pct_fmt, '退款金额': float_fmt,
             '展示': int_fmt, '点击': int_fmt, '广告订单量': int_fmt,
-            '广告花费': float_fmt, '广告销售额': float_fmt, 'CPC': float_fmt
+            '广告花费': float_fmt, '广告销售额': float_fmt, 'CPC': float_fmt,
+            # 20260506新增：父ASIN流量列格式（整数）
+            'Sessions-Browser': int_fmt, 'Sessions-Mobile': int_fmt, 'Sessions-Total': int_fmt,
+            'PV-Browser': int_fmt, 'PV-Mobile': int_fmt, 'PV-Total': int_fmt,
         }
         for col_num, col_name in enumerate(grouped_export.columns):
             if col_name in fmt_map:
@@ -238,5 +297,14 @@ def run():
         print(f"❌ 文件不存在: {input_path}")
         return
 
-    process_xlsx(input_path, output_path)
+    # 20260506新增：自动查找同周次的父ASIN文件（可选），找不到时六列留空
+    parent_asin_file_name = '产品表现父ASIN-' + week_number + '.xlsx'
+    parent_asin_path = input_dir / parent_asin_file_name
+    if parent_asin_path.exists():
+        print(f"📄 找到父ASIN文件: {parent_asin_file_name}")
+    else:
+        print(f"ℹ️ 未找到父ASIN文件（{parent_asin_file_name}），Sessions/PV 列将留空")
+        parent_asin_path = None
+
+    process_xlsx(input_path, output_path, parent_asin_file=parent_asin_path)
     print(f"✅ 周报已生成：{output_path}")

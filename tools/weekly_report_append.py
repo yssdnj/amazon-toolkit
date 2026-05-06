@@ -1,4 +1,5 @@
 from pathlib import Path
+import math
 import datetime
 import pandas as pd
 import xlwings as xw
@@ -39,10 +40,11 @@ def run():
 
     add_row(input_path, output_path)
     fill_data(source_file, output_path)
+    fill_session(source_file, output_path)
 
 def add_row(file_path, save_path=None):
 
-    sheets = ["SL","Toy", "ToyDH", "DL", "DSL", "MFL", "SFM"]
+    sheets = ["SL","Toy", "ToyDH", "DL", "DSL", "MFL", "SFM","SL_访问量","Toy_访问量", "ToyDH_访问量", "DL_访问量", "DSL_访问量", "MFL_访问量", "SFM_访问量"]
 
     # ==============================================================================
     # 20260503修改：App 生命周期改用 try/finally 保护
@@ -161,16 +163,7 @@ def fill_data(file1, file2):
 
             headers = sht.range("A3").expand("right").value
 
-            # ==============================================================================
-            # 20260503修改：逐单元格写入改为先组装整行数据再一次性写入
-            # 旧代码：for col in summary_cols: sht.cells(write_row, col_index).value = ...
-            #         每次写一个单元格触发一次 COM 调用，列多时性能差
-            # 新代码：先把所有要写的值组装到 row_values 列表，最后一次性 range.value 写入
-            # ==============================================================================
-
-            # 先把整行当前值读出来作为基础（保留公式列不被覆盖）
-            total_cols = len(headers)
-            row_values = list(sht.range(write_row, 1).resize(1, total_cols).value or [None] * total_cols)
+            # 修复：整行写回会覆盖公式列，改为只对数据列逐个写入，公式列完全不动
 
             # 第一部分：标签汇总数据
             df_tag = df_summary[df_summary["listing标签"] == tag]
@@ -180,8 +173,8 @@ def fill_data(file1, file2):
                 for col in summary_cols:
                     if col not in headers:
                         continue
-                    # 旧代码：sht.cells(write_row, col_index).value = row_data[col]
-                    row_values[headers.index(col)] = row_data[col]
+                    col_idx = headers.index(col) + 1  # xlwings 列号从1开始
+                    sht.cells(write_row, col_idx).value = row_data[col]
 
             # 第二部分：品名数据
             df_tag_product = df_product[df_product["listing标签"] == tag]
@@ -192,19 +185,14 @@ def fill_data(file1, file2):
                     sales = row["销量"]
                     refund_qty = row["退款量"]
 
-                    # 写入销量列（例如 3.6FT）
                     if product_name in headers:
-                        # 旧代码：sht.cells(write_row, col_index).value = sales
-                        row_values[headers.index(product_name)] = sales
+                        col_idx = headers.index(product_name) + 1
+                        sht.cells(write_row, col_idx).value = sales
 
-                    # 写入退款列（例如 退款3.6FT）
                     refund_col = f"退款{product_name}"
                     if refund_col in headers:
-                        # 旧代码：sht.cells(write_row, col_index).value = refund_qty
-                        row_values[headers.index(refund_col)] = refund_qty
-
-            # 一次性写入整行（原来逐格写入改为单次 COM 调用）
-            sht.range(write_row, 1).resize(1, total_cols).value = row_values
+                        col_idx = headers.index(refund_col) + 1
+                        sht.cells(write_row, col_idx).value = refund_qty
 
             print(f"✓ 完成 sheet: {tag}")
 
@@ -216,3 +204,72 @@ def fill_data(file1, file2):
         app.quit()
 
     print("✓ 全部完成")
+
+def fill_session(file1, file2):
+
+    session_sheet_map = {
+        "SL_访问量":    "SL",
+        "Toy_访问量":   "Toy",
+        "ToyDH_访问量": "ToyDH",
+        "DL_访问量":    "DL",
+        "DSL_访问量":   "DSL",
+        "MFL_访问量":   "MFL",
+        "SFM_访问量":   "SFM",
+    }
+
+    session_cols = [
+        "Sessions-Browser", "Sessions-Mobile", "Sessions-Total",
+        "PV-Browser", "PV-Mobile", "PV-Total",
+    ]
+
+    # 读取 source 文件的标签汇总表
+    df_summary = pd.read_excel(file1, sheet_name="标签汇总sht")
+    df_summary["listing标签"] = df_summary["listing标签"].astype(str).str.strip()
+
+    # 只保留 source 文件实际存在的列（兼容旧文件无此六列）
+    available_cols = [c for c in session_cols if c in df_summary.columns]
+    if not available_cols:
+        print("ℹ️ source 文件中无 Sessions/PV 列，跳过 fill_session")
+        return
+
+    app = xw.App(visible=False)
+    try:
+        wb = app.books.open(file2)
+
+        for sheet_name, tag in session_sheet_map.items():
+
+            try:
+                sht = wb.sheets[sheet_name]
+            except Exception as e:
+                print(f"⚠ sheet不存在或打开失败: {sheet_name}，原因: {e}")
+                continue
+
+            # 找写入行（与 fill_data 完全相同）
+            last_row = sht.used_range.last_cell.row
+            write_row = last_row - 1
+
+            # 列头在第3行（与 fill_data 完全相同）
+            headers = sht.range("A3").expand("right").value
+
+            # 按 listing标签 找对应行，只写数据列，不读写整行（避免覆盖公式）
+            df_tag = df_summary[df_summary["listing标签"] == tag]
+            if not df_tag.empty:
+                row_data = df_tag.iloc[0]
+                for col in available_cols:
+                    if col not in headers:
+                        continue
+                    val = row_data[col]
+                    col_idx = headers.index(col) + 1  # xlwings 列号从1开始
+                    if val is None or (isinstance(val, float) and math.isnan(val)):
+                        sht.cells(write_row, col_idx).value = None
+                    else:
+                        sht.cells(write_row, col_idx).value = int(val)
+            print(f"✓ 完成 sheet: {sheet_name}（{tag}）")
+
+        wb.save()
+
+    finally:
+        wb.close()
+        app.quit()
+
+    print("✓ fill_session 全部完成")
