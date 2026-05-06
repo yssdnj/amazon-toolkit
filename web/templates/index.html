@@ -222,6 +222,39 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .log-msg.warn { color: var(--warn); }
 .log-msg.info { color: var(--info); }
 .log-prompt { color: var(--text-3); }
+
+/* ── Confirm dialog ──────────────────────── */
+.confirm-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100; backdrop-filter: blur(2px);
+  animation: fade-in 0.15s ease;
+}
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+.confirm-box {
+  background: var(--bg-2); border: 1px solid var(--border-hi);
+  border-radius: var(--radius-lg); padding: 24px 28px;
+  min-width: 300px; max-width: 420px;
+  animation: slide-up 0.15s ease;
+}
+@keyframes slide-up { from { transform: translateY(8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.confirm-icon { width: 36px; height: 36px; background: var(--err-dim); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
+.confirm-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.confirm-msg { font-size: 13px; color: var(--text-2); line-height: 1.6; margin-bottom: 20px; word-break: break-all; }
+.confirm-fname { color: var(--text); font-family: var(--font-mono); font-size: 12px; }
+.confirm-actions { display: flex; gap: 8px; justify-content: flex-end; }
+.btn-cancel {
+  padding: 7px 18px; border-radius: var(--radius); border: 1px solid var(--border-hi);
+  background: none; color: var(--text-2); font-family: var(--font-ui); font-size: 13px;
+  cursor: pointer; transition: all 0.12s;
+}
+.btn-cancel:hover { background: var(--bg-3); color: var(--text); }
+.btn-confirm-del {
+  padding: 7px 18px; border-radius: var(--radius); border: none;
+  background: var(--err); color: #fff; font-family: var(--font-ui); font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: all 0.12s;
+}
+.btn-confirm-del:hover { background: #c94a4a; }
 .log-cursor { display: inline-block; width: 7px; height: 13px; background: var(--accent); vertical-align: middle; animation: blink 1s step-end infinite; margin-left: 2px; }
 @keyframes blink { 50% { opacity: 0; } }
 
@@ -237,6 +270,43 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .empty-panel { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; gap: 12px; color: var(--text-3); }
 .empty-panel svg { opacity: 0.3; }
 .empty-panel p { font-size: 13px; }
+
+/* ── Confirm Dialog ──────────────────────── */
+.confirm-overlay {
+  position: fixed; inset: 0; z-index: 999;
+  background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+}
+.confirm-box {
+  background: var(--bg-2); border: 1px solid var(--border-hi);
+  border-radius: var(--radius-lg); padding: 28px 28px 22px;
+  width: 320px; text-align: center;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+  animation: pop-in 0.15s ease;
+}
+@keyframes pop-in {
+  from { transform: scale(0.94); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+.confirm-icon { margin-bottom: 14px; }
+.confirm-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+.confirm-msg { font-size: 12px; color: var(--text-2); line-height: 1.8; margin-bottom: 20px; }
+.confirm-fname { color: var(--err); font-family: var(--font-mono); font-size: 11px; word-break: break-all; }
+.confirm-actions { display: flex; gap: 8px; }
+.btn-cancel {
+  flex: 1; padding: 8px; border-radius: var(--radius);
+  border: 1px solid var(--border-hi); background: none;
+  color: var(--text-2); font-family: var(--font-ui); font-size: 13px;
+  cursor: pointer; transition: all 0.12s;
+}
+.btn-cancel:hover { background: var(--bg-3); color: var(--text); }
+.btn-confirm-del {
+  flex: 1; padding: 8px; border-radius: var(--radius);
+  border: none; background: var(--err); color: #fff;
+  font-family: var(--font-ui); font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: all 0.12s;
+}
+.btn-confirm-del:hover { background: #f07070; }
 </style>
 </head>
 <body>
@@ -475,8 +545,11 @@ function renderFileList(files, tid, zone) {
       ${zone === 'output' ? `
         <button class="file-row-dl" title="下载" onclick="downloadFile('${tid}','${escHtml(f.name)}')">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v6M3 6l3 3 3-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M2 10h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        </button>
+        <button class="file-row-del" title="删除" onclick="confirmDelete('${tid}','${escHtml(f.name)}','output')">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 2l6 6M8 2L2 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
         </button>` : `
-        <button class="file-row-del" title="删除" onclick="deleteFile('${tid}','${escHtml(f.name)}')">
+        <button class="file-row-del" title="删除" onclick="confirmDelete('${tid}','${escHtml(f.name)}','input')">
           <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 2l6 6M8 2L2 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
         </button>`}
     </div>`).join('');
@@ -510,13 +583,39 @@ async function uploadFiles(tid, fileList) {
   }
 }
 
-async function deleteFile(tid, name) {
+// 弹窗状态
+let _confirmCb = null;
+
+function confirmDelete(tid, name, zone) {
+  document.getElementById('confirm-fname').textContent = name;
+  document.getElementById('confirm-overlay').style.display = 'flex';
+  _confirmCb = () => deleteFile(tid, name, zone);
+}
+
+function confirmOk() {
+  document.getElementById('confirm-overlay').style.display = 'none';
+  if (_confirmCb) { _confirmCb(); _confirmCb = null; }
+}
+
+function confirmCancel(e) {
+  // 点击遮罩层本身才关闭（点击弹窗内部不关闭）
+  if (e && e.target !== document.getElementById('confirm-overlay')) return;
+  document.getElementById('confirm-overlay').style.display = 'none';
+  _confirmCb = null;
+}
+
+// 键盘 Esc 关闭
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') confirmCancel();
+});
+
+async function deleteFile(tid, name, zone = 'input') {
   const res = await fetch(`/api/delete/${tid}`, {
     method: 'POST', headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({ filename: name })
+    body: JSON.stringify({ filename: name, zone })
   });
   const data = await res.json();
-  if (data.ok) { logLine(`🗑 已删除: ${name}`); await refreshFiles(tid); }
+  if (data.ok) { logLine(`🗑 已删除 [${zone === 'output' ? '输出' : '输入'}]: ${name}`); await refreshFiles(tid); }
 }
 
 function downloadFile(tid, name) {
@@ -580,5 +679,20 @@ async function runTool() {
 
 loadTools();
 </script>
+<!-- Confirm Dialog -->
+<div class="confirm-overlay" id="confirm-overlay" style="display:none;" onclick="confirmCancel(event)">
+  <div class="confirm-box">
+    <div class="confirm-icon">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v6M8 11v1.5" stroke="var(--err)" stroke-width="1.8" stroke-linecap="round"/><circle cx="8" cy="8" r="7" stroke="var(--err)" stroke-width="1.4"/></svg>
+    </div>
+    <div class="confirm-title">确认删除</div>
+    <div class="confirm-msg">此操作不可撤销，确定要删除文件<br><span class="confirm-fname" id="confirm-fname"></span> 吗？</div>
+    <div class="confirm-actions">
+      <button class="btn-cancel" onclick="confirmCancel()">取消</button>
+      <button class="btn-confirm-del" onclick="confirmOk()">删除</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

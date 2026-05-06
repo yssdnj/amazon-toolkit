@@ -188,7 +188,9 @@ def api_delete(tool_id):
         return jsonify({'error': '工具不存在'}), 404
     data = request.json or {}
     fname = data.get('filename', '')
-    target = TOOLS[tool_id]['input_dir'] / fname
+    zone  = data.get('zone', 'input')  # 'input' 或 'output'
+    base  = TOOLS[tool_id]['input_dir'] if zone == 'input' else TOOLS[tool_id]['output_dir']
+    target = base / fname
     if target.exists() and target.is_file():
         target.unlink()
         return jsonify({'ok': True})
