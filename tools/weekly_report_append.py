@@ -17,10 +17,10 @@ def run():
     print(f"\n📂 输入文件目录: {input_dir}")
     print(f"📂 输出文件目录: {output_dir}")
 
-    week_number = input("请输入输入周数（如 26W11）: ").strip()
+    week_number = input("请输入国家-周数（如 US-26W11）: ").strip()
 
-    input_file = '周销售数据统计US-'+ week_number + '.xlsx'
-    output_file = '周销售数据统计US-'+ week_number + '.xlsx'
+    input_file = '周销售数据统计'+ week_number + '.xlsx'
+    output_file = '周销售数据统计'+ week_number + '.xlsx'
 
     input_path = input_dir / input_file
     output_path = output_dir / output_file

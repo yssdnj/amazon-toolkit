@@ -34,10 +34,10 @@ TOOLS = {
         'input_dir': BASE_DIR / 'data' / 'weekly_data_clean' / 'input',
         'output_dir': BASE_DIR / 'data' / 'weekly_data_clean' / 'output',
         'params': [
-            {'key': 'week_number', 'label': '周次', 'placeholder': '如 26W17', 'required': True}
+            {'key': 'week_number', 'label': '国家-周次', 'placeholder': '如 US-26W17', 'required': True}
         ],
         'module': 'tools.weekly_data_clean',
-        'note':   '输入文件须命名为 产品表现MSKU-{周次}.xlsx',
+        'note':   '输入文件须命名为 产品表现MSKU-{国家}-{周次}.xlsx, 产品表现父ASIN-{国家}-{周次}.xlsx',
     },
     'weekly_report_append': {
         'name':    '周报数据写入',
@@ -45,10 +45,10 @@ TOOLS = {
         'input_dir': BASE_DIR / 'data' / 'weekly_report_append' / 'input',
         'output_dir': BASE_DIR / 'data' / 'weekly_report_append' / 'output',
         'params': [
-            {'key': 'week_number', 'label': '周次', 'placeholder': '如 26W17', 'required': True}
+            {'key': 'week_number', 'label': '国家-周次', 'placeholder': '如 US-26W17', 'required': True}
         ],
         'module': 'tools.weekly_report_append',
-        'note':   '需先完成周报数据清洗（步骤一）。输入文件须命名为 周销售数据统计US-{周次}.xlsx',
+        'note':   '需先完成周报数据清洗（步骤一）。输入文件须命名为 周销售数据统计{国家}-{周次}.xlsx',
         'depends': 'weekly_data_clean',
     },
     'ad_bulk_update': {

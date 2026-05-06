@@ -286,7 +286,7 @@ def run():
 
     # input_file = input("请输入输入文件名（如 产品表现MSKU-W39.xlsx）: ").strip()
     # output_file = input("请输入输出文件名（如 output_aggregated-W39.xlsx）: ").strip()
-    week_number = input("请输入输入周数（如 26W11）: ").strip()
+    week_number = input("请输入国家-周数（如 US-26W11）: ").strip()
     input_file = '产品表现MSKU-' + week_number + '.xlsx'
     output_file = 'output_aggregated-' + week_number + '.xlsx'
 
