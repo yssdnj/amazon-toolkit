@@ -10,7 +10,6 @@ TOOLS = {
     "5": ("广告批量更新Bid", "amazon_toolkit.tools.ad_bulk_update"),
 }
 
-
 def main():
     while True:
         print("\n=== Amazon Automation Toolkit ===")
