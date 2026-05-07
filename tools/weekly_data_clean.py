@@ -10,7 +10,7 @@ from pathlib import Path
 
 # 需要 sum 聚合的原始数值列
 _AGG_COLS = [
-    '订单量', '销量', '销售额', '促销销量', '促销订单量', '促销销售额',
+    '订单量', '销量', '销售额', '促销销量', '促销订单量', '促销销售额', '促销折扣',
     '退款量', '退款金额', '展示', '点击', '广告订单量', '广告花费', '广告销售额'
 ]
 # 由 _AGG_COLS 自动生成 agg 字典，避免重复书写
@@ -44,7 +44,6 @@ def _calc_derived_df(df):
     # grouped['促销折扣'] = grouped.apply(lambda r: r['促销销售额']/r['促销销量'] if r['促销销量']>0 else 0, axis=1)
     df['退款率'] = df['退款量'].div(df['销量'].replace(0, float('nan'))).fillna(0)
     df['CPC'] = df['广告花费'].div(df['点击'].replace(0, float('nan'))).fillna(0)
-    df['促销折扣'] = df['促销销售额'].div(df['促销销量'].replace(0, float('nan'))).fillna(0)
     return df
 
 
@@ -56,7 +55,6 @@ def _calc_derived_dict(d):
     # sub_group['促销折扣'] = sub_group['促销销售额']/sub_group['促销销量'] if sub_group['促销销量'] > 0 else 0
     d['退款率'] = d['退款量'] / d['销量'] if d['销量'] > 0 else 0
     d['CPC'] = d['广告花费'] / d['点击'] if d['点击'] > 0 else 0
-    d['促销折扣'] = d['促销销售额'] / d['促销销量'] if d['促销销量'] > 0 else 0
     return d
 
 
@@ -127,7 +125,7 @@ def process_xlsx(input_file, output_file, parent_asin_file=None):
             return pd.to_numeric(s, errors='coerce').fillna(0).astype(float)
 
     int_cols = ['订单量', '销量', '促销销量', '促销订单量', '退款量', '展示', '点击', '广告订单量']
-    float_cols = ['销售额', '促销销售额', '退款金额', '广告花费', '广告销售额']
+    float_cols = ['销售额', '促销销售额', '促销折扣', '退款金额', '广告花费', '广告销售额']
 
     for col in int_cols:
         df[col] = to_num(df[col].astype(str), True)
