@@ -1,6 +1,9 @@
 # Claude Code working files
 .claude/
 
+# Data files (xlsx, input/output — not tracked in git)
+data/
+
 # Python
 __pycache__/
 *.py[cod]
