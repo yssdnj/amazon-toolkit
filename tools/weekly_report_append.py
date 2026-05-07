@@ -1,9 +1,27 @@
 from pathlib import Path
 import math
 import datetime
-import pandas as pd
-import xlwings as xw
+import sys
 
+# ==============================================================================
+# OS 自动路由：Windows 使用 xlwings（依赖 Excel），其他系统使用 openpyxl
+# ==============================================================================
+IS_WINDOWS = sys.platform == 'win32'
+
+if IS_WINDOWS:
+    import xlwings as xw
+else:
+    import re
+    from copy import copy
+    import pandas as pd
+    from openpyxl import load_workbook
+
+import pandas as pd  # fill_data / fill_session 两端都需要
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 公共入口（run）
+# ══════════════════════════════════════════════════════════════════════════════
 
 def run():
     base_path = Path(__file__).resolve().parents[1]
@@ -16,11 +34,12 @@ def run():
 
     print(f"\n📂 输入文件目录: {input_dir}")
     print(f"📂 输出文件目录: {output_dir}")
+    print(f"🖥  运行环境: {'Windows (xlwings)' if IS_WINDOWS else 'Linux/Mac (openpyxl)'}")
 
     week_number = input("请输入国家-周数（如 US-26W11）: ").strip()
 
-    input_file = '周销售数据统计'+ week_number + '.xlsx'
-    output_file = '周销售数据统计'+ week_number + '.xlsx'
+    input_file = '周销售数据统计' + week_number + '.xlsx'
+    output_file = '周销售数据统计' + week_number + '.xlsx'
 
     input_path = input_dir / input_file
     output_path = output_dir / output_file
@@ -42,7 +61,12 @@ def run():
     fill_data(source_file, output_path)
     fill_session(source_file, output_path)
 
-def add_row(file_path, save_path=None):
+
+# ══════════════════════════════════════════════════════════════════════════════
+# Windows 实现（xlwings + Excel COM）
+# ══════════════════════════════════════════════════════════════════════════════
+
+def _win_add_row(file_path, save_path=None):
 
     sheets = ["SL","Toy", "ToyDH", "DL", "DSL", "MFL", "SFM","SL_访问量","Toy_访问量", "ToyDH_访问量", "DL_访问量", "DSL_访问量", "MFL_访问量", "SFM_访问量"]
 
@@ -117,7 +141,8 @@ def add_row(file_path, save_path=None):
 
     return "全部sheet处理完成"
 
-def fill_data(file1, file2):
+
+def _win_fill_data(file1, file2):
 
     sheet_map = ["SL", "Toy", "ToyDH", "DL", "DSL", "MFL","SFM"]
 
@@ -205,7 +230,8 @@ def fill_data(file1, file2):
 
     print("✓ 全部完成")
 
-def fill_session(file1, file2):
+
+def _win_fill_session(file1, file2):
 
     session_sheet_map = {
         "SL_访问量":    "SL",
@@ -273,3 +299,295 @@ def fill_session(file1, file2):
         app.quit()
 
     print("✓ fill_session 全部完成")
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# Linux/Mac 实现（openpyxl，纯 Python，无需 Excel）
+# ══════════════════════════════════════════════════════════════════════════════
+
+def _adjust_formula(formula, row_offset):
+    """调整公式中的相对行引用（对应 Excel 复制行时自动偏移行号的行为）
+    例：=(C81-C80)/C80 向下复制1行 → =(C82-C81)/C81
+    规则：相对行引用（无 $ 前缀）加 row_offset；绝对行引用（有 $ 前缀）不变
+    """
+    if not formula or not isinstance(formula, str) or not formula.startswith('='):
+        return formula
+
+    def replace_ref(match):
+        col_abs = match.group(1)
+        col     = match.group(2)
+        row_abs = match.group(3)
+        row     = match.group(4)
+        if row_abs:
+            return f"{col_abs}{col}{row_abs}{row}"
+        else:
+            return f"{col_abs}{col}{int(row) + row_offset}"
+
+    return re.sub(r'(\$?)([A-Z]+)(\$?)(\d+)', replace_ref, formula)
+
+
+def _get_last_row(ws):
+    """找最后一个任意列有值的行号（扫描所有列，避免只看A列遗漏汇总行）"""
+    for row in range(ws.max_row, 0, -1):
+        for col in range(1, ws.max_column + 1):
+            if ws.cell(row=row, column=col).value is not None:
+                return row
+    return 1
+
+
+def _expand_table_ref(ws, inserted_row):
+    """插入行后更新工作表中所有 Excel 表格（ListObject）的引用范围
+    openpyxl 的 insert_rows() 不会自动更新 Table.ref，
+    导致新行落在表格汇总行位置，需手动将表格末行扩展一行
+    """
+    for tbl in ws.tables.values():
+        if ':' not in tbl.ref:
+            continue
+        start_ref, end_ref = tbl.ref.split(':')
+        match = re.match(r'([A-Z]+)(\d+)$', end_ref)
+        if not match:
+            continue
+        end_col, end_row = match.group(1), int(match.group(2))
+        if end_row >= inserted_row:
+            tbl.ref = f"{start_ref}:{end_col}{end_row + 1}"
+
+
+def _update_summary_formulas(ws, summary_row, old_end_row, new_end_row):
+    """更新汇总行的 SUM 公式，将范围末端从 old_end_row 扩展到 new_end_row
+    对应 Excel 插入行时自动扩展相邻 SUM 范围的行为（openpyxl 不会自动扩展）
+    例：=SUM(B3:B81) → =SUM(B3:B82)
+    """
+    def expand_ref(match):
+        col_abs = match.group(1)
+        col     = match.group(2)
+        row_abs = match.group(3)
+        row     = int(match.group(4))
+        if not row_abs and row == old_end_row:
+            return f"{col_abs}{col}{new_end_row}"
+        return match.group(0)
+
+    for col in range(1, ws.max_column + 1):
+        cell = ws.cell(row=summary_row, column=col)
+        if isinstance(cell.value, str) and cell.value.startswith('='):
+            cell.value = re.sub(r'(\$?)([A-Z]+)(\$?)(\d+)', expand_ref, cell.value)
+
+
+def _copy_row_style(ws, src_row, dst_row):
+    """将 src_row 的格式和公式复制到 dst_row，并自动调整相对行引用
+    对应 xlwings：api.Copy() + PasteSpecial(-4122 格式) + PasteSpecial(-4123 公式)
+    """
+    row_offset = dst_row - src_row
+    for col in range(1, ws.max_column + 1):
+        src = ws.cell(row=src_row, column=col)
+        dst = ws.cell(row=dst_row, column=col)
+        if isinstance(src.value, str) and src.value.startswith('='):
+            dst.value = _adjust_formula(src.value, row_offset)
+        else:
+            dst.value = src.value
+        if src.has_style:
+            dst.font = copy(src.font)
+            dst.fill = copy(src.fill)
+            dst.border = copy(src.border)
+            dst.alignment = copy(src.alignment)
+            dst.number_format = src.number_format
+            dst.protection = copy(src.protection)
+
+
+def _get_headers(ws, header_row=3):
+    """读取指定行表头，遇到空列停止（对应 xlwings range.expand('right').value）"""
+    headers = []
+    for col in range(1, ws.max_column + 1):
+        val = ws.cell(row=header_row, column=col).value
+        if val is None:
+            break
+        headers.append(val)
+    return headers
+
+
+def _linux_add_row(file_path, save_path=None):
+
+    sheets = ["SL", "Toy", "ToyDH", "DL", "DSL", "MFL", "SFM",
+              "SL_访问量", "Toy_访问量", "ToyDH_访问量", "DL_访问量",
+              "DSL_访问量", "MFL_访问量", "SFM_访问量"]
+
+    wb = load_workbook(file_path)
+
+    today = datetime.date.today() - datetime.timedelta(days=7)
+    monday = today - datetime.timedelta(days=today.weekday())
+    sunday = monday + datetime.timedelta(days=6)
+    year, week, _ = monday.isocalendar()
+    year_week = f"{year}W{week:02d}"
+    week_range = f"{monday.strftime('%m%d')}~{sunday.strftime('%m%d')}"
+
+    for sheet_name in sheets:
+
+        if sheet_name not in wb.sheetnames:
+            print(f"sheet不存在: {sheet_name}")
+            continue
+
+        ws = wb[sheet_name]
+
+        summary_row  = _get_last_row(ws)
+        template_row = summary_row - 1
+        insert_row   = summary_row
+
+        ws.insert_rows(insert_row)
+        _expand_table_ref(ws, insert_row)
+        _copy_row_style(ws, template_row, insert_row)
+        _update_summary_formulas(ws, summary_row + 1, template_row, insert_row)
+
+        ws.cell(row=insert_row, column=1).value = week_range
+        ws.cell(row=insert_row, column=2).value = year_week
+
+        print(f"完成 sheet: {sheet_name}")
+
+    if save_path:
+        wb.save(save_path)
+    else:
+        wb.save(file_path)
+
+    return "全部sheet处理完成"
+
+
+def _linux_fill_data(file1, file2):
+
+    sheet_map = ["SL", "Toy", "ToyDH", "DL", "DSL", "MFL", "SFM"]
+
+    summary_cols = [
+        "销量", "订单量", "销售额", "促销销量", "促销订单量", "促销销售额",
+        "促销折扣", "退款量", "退款金额", "展示", "点击",
+        "广告订单量", "广告花费", "广告销售额", "CPC"
+    ]
+
+    df_summary = pd.read_excel(file1, sheet_name="标签汇总sht")
+    df_product = pd.read_excel(file1, sheet_name="标签品名汇总sht")
+
+    df_summary["listing标签"] = df_summary["listing标签"].astype(str).str.strip()
+    df_product["listing标签"] = df_product["listing标签"].astype(str).str.strip()
+
+    wb = load_workbook(file2)
+
+    for tag in sheet_map:
+
+        if tag not in wb.sheetnames:
+            print(f"⚠ sheet不存在或打开失败: {tag}")
+            continue
+
+        ws = wb[tag]
+        last_row = ws.max_row
+        write_row = last_row - 1
+        headers = _get_headers(ws)
+
+        df_tag = df_summary[df_summary["listing标签"] == tag]
+
+        if not df_tag.empty:
+            row_data = df_tag.iloc[0]
+            for col in summary_cols:
+                if col not in headers:
+                    continue
+                col_idx = headers.index(col) + 1
+                ws.cell(row=write_row, column=col_idx).value = row_data[col]
+
+        df_tag_product = df_product[df_product["listing标签"] == tag]
+
+        if not df_tag_product.empty:
+            for _, row in df_tag_product.iterrows():
+                product_name = str(row["品名"]).strip()
+                sales = row["销量"]
+                refund_qty = row["退款量"]
+
+                if product_name in headers:
+                    col_idx = headers.index(product_name) + 1
+                    ws.cell(row=write_row, column=col_idx).value = sales
+
+                refund_col = f"退款{product_name}"
+                if refund_col in headers:
+                    col_idx = headers.index(refund_col) + 1
+                    ws.cell(row=write_row, column=col_idx).value = refund_qty
+
+        print(f"✓ 完成 sheet: {tag}")
+
+    wb.save(file2)
+    print("✓ 全部完成")
+
+
+def _linux_fill_session(file1, file2):
+
+    session_sheet_map = {
+        "SL_访问量":    "SL",
+        "Toy_访问量":   "Toy",
+        "ToyDH_访问量": "ToyDH",
+        "DL_访问量":    "DL",
+        "DSL_访问量":   "DSL",
+        "MFL_访问量":   "MFL",
+        "SFM_访问量":   "SFM",
+    }
+
+    session_cols = [
+        "Sessions-Browser", "Sessions-Mobile", "Sessions-Total",
+        "PV-Browser", "PV-Mobile", "PV-Total",
+    ]
+
+    df_summary = pd.read_excel(file1, sheet_name="标签汇总sht")
+    df_summary["listing标签"] = df_summary["listing标签"].astype(str).str.strip()
+
+    available_cols = [c for c in session_cols if c in df_summary.columns]
+    if not available_cols:
+        print("ℹ️ source 文件中无 Sessions/PV 列，跳过 fill_session")
+        return
+
+    wb = load_workbook(file2)
+
+    for sheet_name, tag in session_sheet_map.items():
+
+        if sheet_name not in wb.sheetnames:
+            print(f"⚠ sheet不存在或打开失败: {sheet_name}")
+            continue
+
+        ws = wb[sheet_name]
+        last_row = ws.max_row
+        write_row = last_row - 1
+        headers = _get_headers(ws)
+
+        df_tag = df_summary[df_summary["listing标签"] == tag]
+        if not df_tag.empty:
+            row_data = df_tag.iloc[0]
+            for col in available_cols:
+                if col not in headers:
+                    continue
+                val = row_data[col]
+                col_idx = headers.index(col) + 1
+                if val is None or (isinstance(val, float) and math.isnan(val)):
+                    ws.cell(row=write_row, column=col_idx).value = None
+                else:
+                    ws.cell(row=write_row, column=col_idx).value = int(val)
+
+        print(f"✓ 完成 sheet: {sheet_name}（{tag}）")
+
+    wb.save(file2)
+    print("✓ fill_session 全部完成")
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 统一对外接口，由 OS 自动路由到对应实现
+# ══════════════════════════════════════════════════════════════════════════════
+
+def add_row(file_path, save_path=None):
+    if IS_WINDOWS:
+        return _win_add_row(file_path, save_path)
+    else:
+        return _linux_add_row(file_path, save_path)
+
+
+def fill_data(file1, file2):
+    if IS_WINDOWS:
+        return _win_fill_data(file1, file2)
+    else:
+        return _linux_fill_data(file1, file2)
+
+
+def fill_session(file1, file2):
+    if IS_WINDOWS:
+        return _win_fill_session(file1, file2)
+    else:
+        return _linux_fill_session(file1, file2)
