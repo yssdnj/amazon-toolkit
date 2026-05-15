@@ -37,9 +37,9 @@ HEADERS = ['状态', '广告活动', '广告组', 'ASIN', '存在', '', '西柚�
            '热度', '相关性', '竞价策略', '品牌', '备注', '批量插入']
 
 COLUMN_WIDTHS = {
-    'A': 13, 'B': 28, 'C': 16, 'D': 12, 'E': 8,
-    'F': 5,  'G': 13, 'H': 8,  'I': 8,  'J': 10,
-    'K': 10, 'L': 10, 'M': 20,
+    'A': 8,  'B': 30, 'C': 15, 'D': 15, 'E': 8,
+    'F': 5,  'G': 12, 'H': 8,  'I': 8,  'J': 10,
+    'K': 8,  'L': 8,  'M': 25,
 }
 
 
@@ -74,12 +74,11 @@ def run():
         return
     print(f"📌 去重后共 {len(variant_groups)} 个父ASIN组")
 
-    # 3. 收集所有子 ASIN
-    all_child_asins = [child for g in variant_groups for child in g['childAsins']]
-    print(f"📌 共 {len(all_child_asins)} 个子ASIN，开始分批查询得分...")
+    # 3. 按父体分组批量查询流量得分
+    total_children = sum(len(g['childAsins']) for g in variant_groups)
+    print(f"📌 共 {total_children} 个子ASIN，按父体批量查询得分...")
 
-    # 4. 分批获取流量得分（每批 ≤100）
-    score_map = _fetch_scores_batched(all_child_asins)
+    score_map = _fetch_scores_by_group(variant_groups)
     print(f"📌 得分查询完成，获取 {len(score_map)} 条记录")
 
     # 5. 写入 Excel
@@ -95,7 +94,7 @@ def _api_call(endpoint, body, retry=MAX_RETRIES):
     for attempt in range(1, retry + 1):
         try:
             timestamp = str(int(time.time()))
-            body_str  = json.dumps(body, ensure_ascii=False, separators=(',', ':'))
+            body_str  = json.dumps(body, separators=(',', ':'), sort_keys=True)
             raw  = f"{XIYOU_CLIENT_ID}{timestamp}{XIYOU_CLIENT_SECRET}{body_str}"
             sign = hashlib.sha256(raw.encode('utf-8')).hexdigest()
 
@@ -129,31 +128,34 @@ def _fetch_variant(asin):
         return None
 
 
-def _fetch_scores_batched(child_asins):
+def _fetch_scores_by_group(variant_groups):
     """
-    分批查询流量得分（每批 ≤ TRAFFIC_BATCH_SIZE），
+    按父体分组批量查询流量得分。
+    同一父体的所有子ASIN一次性发送（超过100个时自动拆批）。
     返回 { asin: totalTrafficScore }
     """
-    if not child_asins:
-        return {}
-
     score_map = {}
-    total     = len(child_asins)
-    batches   = [child_asins[i:i + TRAFFIC_BATCH_SIZE]
-                 for i in range(0, total, TRAFFIC_BATCH_SIZE)]
 
-    for idx, batch in enumerate(batches, 1):
-        print(f"  → 得分查询批次 {idx}/{len(batches)}（{len(batch)} 个ASIN）")
-        try:
-            body = {"entities": [{"country": COUNTRY, "asin": a} for a in batch]}
-            data = _api_call("/v1/asins/traffic", body)
-            for item in data.get("entities", []):
-                score_map[item["asin"]] = item.get("totalTrafficScore", 0)
-        except Exception as e:
-            print(f"  ❌ 得分批次 {idx} 失败: {e}")
-        # 批次间短暂等待，避免触发限流
-        if idx < len(batches):
-            time.sleep(0.5)
+    for i, group in enumerate(variant_groups, 1):
+        parent   = group['parentAsin']
+        children = group['childAsins']
+        if not children:
+            continue
+
+        print(f"  → [{i}/{len(variant_groups)}] 父ASIN {parent}，查询 {len(children)} 个子ASIN得分")
+
+        # 子ASIN超过100时拆批（通常不会触发）
+        batches = [children[j:j + TRAFFIC_BATCH_SIZE]
+                   for j in range(0, len(children), TRAFFIC_BATCH_SIZE)]
+
+        for batch in batches:
+            try:
+                body = {"entities": [{"country": COUNTRY, "asin": a} for a in batch]}
+                data = _api_call("/v1/asins/traffic", body)
+                for item in data.get("entities", []):
+                    score_map[item["asin"]] = item.get("totalTrafficScore", 0)
+            except Exception as e:
+                print(f"  ❌ 父ASIN {parent} 得分查询失败: {e}")
 
     return score_map
 
@@ -270,7 +272,7 @@ def _write_excel(variant_groups, score_map, output_path):
                 '',                                                                     # J 竞价策略
                 '',                                                                     # K 品牌
                 '',                                                                     # L 备注
-                f'=IF(D{r}="","",CONCATENATE("asin=",CHAR(34),D{r},CHAR(34)))',        # M 批量插入
+                f'=IF(D{r}="","",CONCATENATE("asin=","""",D{r},""""))',                 # M 批量插入
             ])
             excel_row += 1
 

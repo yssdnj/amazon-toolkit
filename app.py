@@ -59,6 +59,12 @@ TOOLS = {
         'params': [],
         'module': 'tools.ad_bulk_update',
         'note':   '输入目录须包含 BulkSheetExport*.xlsx 及 targeting_labels_*.xlsx 文件',
+        'guide':  [
+            ('输入文件', 'targeting_labels_*.xlsx — 竞价更新指导文件，包含各关键词/ASIN的调价规则；BulkSheetExport*.xlsx — 从亚马逊广告后台导出的 Bulk Sheet 文件'),
+            ('输出文件', 'BulkSheetExport*_updated.xlsx — 竞价已更新的 Bulk 文件，可直接回传亚马逊'),
+            ('调价逻辑', '高 ACoS（超标）→ 降价标红；高点击不出单 → 标黄提示；竞价指导文件同步回写 T列原竞价 / U列新竞价 / V列操作日期'),
+            ('注意事项', '同一目录下只处理最新的一对文件；Bulk 文件中的 Search Term Report Sheet 会被自动删除'),
+        ],
     },
     'asin_variant_score': {
         'name':    'ASIN变体得分查询',
@@ -164,6 +170,7 @@ def api_tools():
             'params':  t['params'],
             'note':    t.get('note', ''),
             'depends': t.get('depends', None),
+            'guide':   t.get('guide', []),
         }
     return jsonify(result)
 

@@ -128,8 +128,37 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 
 .panel { padding: 28px 32px; overflow-y: auto; }
 
+.panel-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 4px; }
+.panel-header-left { flex: 1; min-width: 0; }
 .panel-title { font-size: 20px; font-weight: 600; letter-spacing: -0.3px; color: var(--text); margin-bottom: 4px; }
 .panel-desc { font-size: 13px; color: var(--text-2); margin-bottom: 24px; }
+
+/* 功能介绍 */
+.guide-toggle {
+  display: flex; align-items: center; gap: 5px; flex-shrink: 0;
+  padding: 5px 10px; border-radius: var(--radius);
+  border: 1px solid var(--border); background: none;
+  font-family: var(--font-ui); font-size: 12px; color: var(--text-2);
+  cursor: pointer; transition: all 0.15s; white-space: nowrap; margin-top: 3px;
+}
+.guide-toggle:hover { background: var(--bg-3); color: var(--text); border-color: var(--border-hi); }
+.guide-toggle svg { transition: transform 0.2s; }
+.guide-toggle.open svg { transform: rotate(180deg); }
+
+.guide-box {
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 0;
+  margin-bottom: 20px; overflow: hidden;
+  max-height: 0; transition: max-height 0.25s ease, padding 0.25s ease;
+}
+.guide-box.open { max-height: 600px; }
+.guide-box-inner { padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; }
+.guide-row { display: flex; gap: 12px; font-size: 12px; line-height: 1.7; }
+.guide-label {
+  flex-shrink: 0; width: 60px; font-weight: 500; color: var(--accent);
+  font-family: var(--font-mono); font-size: 11px; padding-top: 1px;
+}
+.guide-val { color: var(--text-2); flex: 1; }
 
 .note-bar {
   display: flex; align-items: flex-start; gap: 8px;
@@ -244,8 +273,22 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ── Terminal ─────────────────────────────── */
+.terminal-resize-handle {
+  height: 5px; cursor: row-resize; flex-shrink: 0;
+  background: transparent; transition: background 0.15s;
+  position: relative;
+}
+.terminal-resize-handle::after {
+  content: ''; position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: 32px; height: 3px; border-radius: 99px;
+  background: var(--border-hi); opacity: 0; transition: opacity 0.15s;
+}
+.terminal-resize-handle:hover::after,
+.terminal-resize-handle.dragging::after { opacity: 1; }
+
 .terminal {
-  border-top: 1px solid var(--border); background: var(--term-bg);
+  background: var(--term-bg);
   display: flex; flex-direction: column;
 }
 .terminal-bar {
@@ -424,6 +467,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 
       <!-- Terminal -->
       <div class="terminal">
+        <div class="terminal-resize-handle" id="term-resize-handle"></div>
         <div class="terminal-bar">
           <div class="terminal-dots">
             <div class="terminal-dot dot-r"></div>
@@ -502,6 +546,14 @@ function renderParams(t, tid) {
       </button>
     </div>
   </div>`;
+}
+
+function toggleGuide() {
+  const btn = document.getElementById('guide-toggle');
+  const box = document.getElementById('guide-box');
+  if (!btn || !box) return;
+  const isOpen = box.classList.toggle('open');
+  btn.classList.toggle('open', isOpen);
 }
 
 function updateAsinCount(key) {
@@ -608,8 +660,33 @@ async function renderPanel(tid) {
 
   const panel = document.getElementById('panel');
   panel.innerHTML = `
-    <div class="panel-title">${t.name}</div>
-    <div class="panel-desc">${t.desc}</div>
+    <div class="panel-header">
+      <div class="panel-header-left">
+        <div class="panel-title">${t.name}</div>
+        <div class="panel-desc">${t.desc}</div>
+      </div>
+      ${t.guide && t.guide.length ? `
+      <button class="guide-toggle" id="guide-toggle" onclick="toggleGuide()">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+          <circle cx="6.5" cy="6.5" r="5.5" stroke="currentColor" stroke-width="1.2"/>
+          <path d="M6.5 5.5v4M6.5 4v.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+        功能介绍
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+          <path d="M2 3.5l3 3 3-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+      </button>` : ''}
+    </div>
+    ${t.guide && t.guide.length ? `
+    <div class="guide-box" id="guide-box">
+      <div class="guide-box-inner">
+        ${t.guide.map(([label, val]) => `
+        <div class="guide-row">
+          <span class="guide-label">${label}</span>
+          <span class="guide-val">${val}</span>
+        </div>`).join('')}
+      </div>
+    </div>` : ''}
     ${t.note ? `
     <div class="note-bar">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M7 6v4M7 4.5v.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
@@ -789,6 +866,53 @@ async function runTool() {
     if (btn) { btn.disabled = false; btn.classList.remove('loading'); }
   };
 }
+
+// ── Terminal Resize ───────────────────────
+(function () {
+  const MIN_H = 120, MAX_H = 600;
+  const STORAGE_KEY = 'toolkit-term-height';
+
+  function getMain()   { return document.querySelector('.main'); }
+  function setHeight(h) {
+    h = Math.max(MIN_H, Math.min(MAX_H, h));
+    getMain().style.gridTemplateRows = `1fr ${h}px`;
+    localStorage.setItem(STORAGE_KEY, h);
+  }
+
+  // 恢复上次高度
+  const saved = parseInt(localStorage.getItem(STORAGE_KEY));
+  if (saved) document.addEventListener('DOMContentLoaded', () => setHeight(saved));
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const handle = document.getElementById('term-resize-handle');
+    if (!handle) return;
+
+    let startY = 0, startH = 0;
+
+    handle.addEventListener('mousedown', e => {
+      e.preventDefault();
+      startY = e.clientY;
+      startH = getMain().getBoundingClientRect().height -
+               document.querySelector('.panel').getBoundingClientRect().height;
+      handle.classList.add('dragging');
+      document.body.style.userSelect = 'none';
+      document.body.style.cursor = 'row-resize';
+    });
+
+    document.addEventListener('mousemove', e => {
+      if (!handle.classList.contains('dragging')) return;
+      const delta = startY - e.clientY;   // 向上拖 → 终端变高
+      setHeight(startH + delta);
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (!handle.classList.contains('dragging')) return;
+      handle.classList.remove('dragging');
+      document.body.style.userSelect = '';
+      document.body.style.cursor = '';
+    });
+  });
+})();
 
 // ── Theme ─────────────────────────────────
 function applyTheme(theme) {
