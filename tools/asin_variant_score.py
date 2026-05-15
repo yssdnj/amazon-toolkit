@@ -4,40 +4,49 @@ asin_variant_score.py — ASIN 变体流量得分查询
 输出：data/asin_variant_score/output/asin_variant_score.xlsx
 
 流程：
-  1. 读取 ASIN 列表
-  2. 按 parentAsin 去重（兄弟变体只记录一次）
-  3. 批量查询所有子 ASIN 的流量得分
-  4. 按参考格式写入 Excel（D列=ASIN，G列=得分）
+  1. 读取并校验 ASIN 列表
+  2. 逐个查询变体，按 parentAsin 去重（兄弟变体只记录一次）
+  3. 分批（≤100）查询所有子 ASIN 的流量得分
+  4. 按参考格式写入 Excel（D列=ASIN，G列=得分，含公式）
 """
 
-import os
 import hashlib
+import json
+import os
 import time
-import requests
-import pandas as pd
 from pathlib import Path
 
+import pandas as pd
+import requests
+
 # ── 西柚 API 配置 ─────────────────────────────────────────
-XIYOU_BASE_URL    = "https://openapi.xiyouzhaoci.com"
-XIYOU_CLIENT_ID   = "xiyou.ak.8273645"
+XIYOU_BASE_URL     = "https://openapi.xiyouzhaoci.com"
+XIYOU_CLIENT_ID    = "xiyou.ak.8273645"
 XIYOU_CLIENT_SECRET = "xiyou.sk.928374650192837"
 COUNTRY = "US"
+
+# 流量得分接口每批上限
+TRAFFIC_BATCH_SIZE = 100
+# 变体查询间隔（秒），避免触发限流
+VARIANT_INTERVAL   = 0.3
+# 请求失败重试次数
+MAX_RETRIES = 3
 
 # ── 输出 Excel 格式 ───────────────────────────────────────
 HEADERS = ['状态', '广告活动', '广告组', 'ASIN', '存在', '', '西柚找词得分',
            '热度', '相关性', '竞价策略', '品牌', '备注', '批量插入']
 
 COLUMN_WIDTHS = {
-    'A': 8, 'B': 30, 'C': 15, 'D': 15, 'E': 8,
-    'F': 5, 'G': 12, 'H': 8, 'I': 8, 'J': 10,
-    'K': 8, 'L': 8, 'M': 25
+    'A': 13, 'B': 28, 'C': 16, 'D': 12, 'E': 8,
+    'F': 5,  'G': 13, 'H': 8,  'I': 8,  'J': 10,
+    'K': 10, 'L': 10, 'M': 20,
 }
 
 
 # ── 公共入口 ──────────────────────────────────────────────
 
 def run():
-    base_path = Path(__file__).resolve().parents[1]
+    base_path  = Path(__file__).resolve().parents[1]
     input_dir  = base_path / 'data' / 'asin_variant_score' / 'input'
     output_dir = base_path / 'data' / 'asin_variant_score' / 'output'
     input_dir.mkdir(parents=True, exist_ok=True)
@@ -51,7 +60,7 @@ def run():
     input_file = next((f for f in txt_files if f.name == 'asin_list.txt'), txt_files[0])
     print(f"📄 输入文件：{input_file.name}")
 
-    # 1. 读取 ASIN 列表
+    # 1. 读取并校验 ASIN 列表
     asins = _load_asins(input_file)
     if not asins:
         print("❌ 输入文件为空")
@@ -67,10 +76,10 @@ def run():
 
     # 3. 收集所有子 ASIN
     all_child_asins = [child for g in variant_groups for child in g['childAsins']]
-    print(f"📌 共 {len(all_child_asins)} 个子ASIN，开始查询得分...")
+    print(f"📌 共 {len(all_child_asins)} 个子ASIN，开始分批查询得分...")
 
-    # 4. 批量获取流量得分
-    score_map = _fetch_scores(all_child_asins)
+    # 4. 分批获取流量得分（每批 ≤100）
+    score_map = _fetch_scores_batched(all_child_asins)
     print(f"📌 得分查询完成，获取 {len(score_map)} 条记录")
 
     # 5. 写入 Excel
@@ -81,27 +90,38 @@ def run():
 
 # ── API 调用 ──────────────────────────────────────────────
 
-def _api_call(endpoint, body):
-    """带签名的 POST 请求"""
-    import json
-    timestamp = str(int(time.time()))
-    body_str  = json.dumps(body, ensure_ascii=False, separators=(',', ':'))
-    raw = f"{XIYOU_CLIENT_ID}{timestamp}{XIYOU_CLIENT_SECRET}{body_str}"
-    sign = hashlib.sha256(raw.encode('utf-8')).hexdigest()
+def _api_call(endpoint, body, retry=MAX_RETRIES):
+    """带签名的 POST 请求，支持自动重试"""
+    for attempt in range(1, retry + 1):
+        try:
+            timestamp = str(int(time.time()))
+            body_str  = json.dumps(body, ensure_ascii=False, separators=(',', ':'))
+            raw  = f"{XIYOU_CLIENT_ID}{timestamp}{XIYOU_CLIENT_SECRET}{body_str}"
+            sign = hashlib.sha256(raw.encode('utf-8')).hexdigest()
 
-    headers = {
-        'Content-Type': 'application/json',
-        'X-Client-Id':  XIYOU_CLIENT_ID,
-        'X-Timestamp':  timestamp,
-        'X-Sign':       sign,
-    }
-    resp = requests.post(f"{XIYOU_BASE_URL}{endpoint}", headers=headers, json=body, timeout=30)
-    resp.raise_for_status()
-    return resp.json()
+            headers = {
+                'Content-Type': 'application/json',
+                'X-Client-Id':  XIYOU_CLIENT_ID,
+                'X-Timestamp':  timestamp,
+                'X-Sign':       sign,
+            }
+            resp = requests.post(
+                f"{XIYOU_BASE_URL}{endpoint}",
+                headers=headers, json=body, timeout=30
+            )
+            resp.raise_for_status()
+            return resp.json()
+        except Exception as e:
+            if attempt < retry:
+                wait = attempt * 1.5
+                print(f"  ⚠ 第{attempt}次请求失败，{wait:.0f}s 后重试：{e}")
+                time.sleep(wait)
+            else:
+                raise
 
 
 def _fetch_variant(asin):
-    """查询单个 ASIN 的变体"""
+    """查询单个 ASIN 的变体信息"""
     try:
         return _api_call("/v1/asins/variations", {"country": COUNTRY, "asin": asin})
     except Exception as e:
@@ -109,25 +129,53 @@ def _fetch_variant(asin):
         return None
 
 
-def _fetch_scores(child_asins):
-    """批量查询流量得分，返回 { asin: totalTrafficScore }"""
+def _fetch_scores_batched(child_asins):
+    """
+    分批查询流量得分（每批 ≤ TRAFFIC_BATCH_SIZE），
+    返回 { asin: totalTrafficScore }
+    """
     if not child_asins:
         return {}
-    body = {"entities": [{"country": COUNTRY, "asin": a} for a in child_asins]}
-    try:
-        data = _api_call("/v1/asins/traffic", body)
-        return {item["asin"]: item.get("totalTrafficScore", 0)
-                for item in data.get("entities", [])}
-    except Exception as e:
-        print(f"❌ 得分接口失败: {e}")
-        return {}
+
+    score_map = {}
+    total     = len(child_asins)
+    batches   = [child_asins[i:i + TRAFFIC_BATCH_SIZE]
+                 for i in range(0, total, TRAFFIC_BATCH_SIZE)]
+
+    for idx, batch in enumerate(batches, 1):
+        print(f"  → 得分查询批次 {idx}/{len(batches)}（{len(batch)} 个ASIN）")
+        try:
+            body = {"entities": [{"country": COUNTRY, "asin": a} for a in batch]}
+            data = _api_call("/v1/asins/traffic", body)
+            for item in data.get("entities", []):
+                score_map[item["asin"]] = item.get("totalTrafficScore", 0)
+        except Exception as e:
+            print(f"  ❌ 得分批次 {idx} 失败: {e}")
+        # 批次间短暂等待，避免触发限流
+        if idx < len(batches):
+            time.sleep(0.5)
+
+    return score_map
 
 
 # ── 业务逻辑 ──────────────────────────────────────────────
 
 def _load_asins(filepath):
+    """读取并去重 ASIN 列表，过滤格式不合法的行"""
+    seen, result = set(), []
     with open(filepath, 'r', encoding='utf-8') as f:
-        return [line.strip() for line in f if line.strip()]
+        for line in f:
+            asin = line.strip().upper()
+            if not asin:
+                continue
+            if len(asin) != 10:
+                print(f"  ⚠ 跳过格式异常（非10位）: {asin}")
+                continue
+            if asin in seen:
+                continue
+            seen.add(asin)
+            result.append(asin)
+    return result
 
 
 def _fetch_all_variants(asins):
@@ -137,29 +185,35 @@ def _fetch_all_variants(asins):
     """
     seen_parents = set()
     groups = []
+    total  = len(asins)
 
-    for asin in asins:
-        print(f"  → 查询变体: {asin}")
+    for i, asin in enumerate(asins, 1):
+        print(f"  → [{i}/{total}] 查询变体: {asin}")
         data = _fetch_variant(asin)
+
         if data is None:
+            # 接口失败：将该 ASIN 单独作为一组保留
+            if asin not in seen_parents:
+                seen_parents.add(asin)
+                groups.append({"parentAsin": asin, "childAsins": [asin]})
             continue
 
-        parent     = data.get("parentAsin") or asin
+        parent      = data.get("parentAsin") or asin
         child_asins = list(data.get("childAsins") or [])
 
-        # 无父ASIN（单品无变体）时，把自身加入子列表
+        # 单品无变体：把自身加入子列表
         if not data.get("parentAsin") and asin not in child_asins:
             child_asins.append(asin)
 
         if parent in seen_parents:
             print(f"    ↳ 已有父ASIN {parent}，跳过（兄弟变体去重）")
-            continue
+        else:
+            seen_parents.add(parent)
+            groups.append({"parentAsin": parent, "childAsins": child_asins})
 
-        seen_parents.add(parent)
-        groups.append({
-            "parentAsin": parent,
-            "childAsins": child_asins,
-        })
+        # 变体查询间隔，避免触发限流
+        if i < total:
+            time.sleep(VARIANT_INTERVAL)
 
     return groups
 
@@ -167,11 +221,11 @@ def _fetch_all_variants(asins):
 # ── Excel 输出 ────────────────────────────────────────────
 
 def _write_excel(variant_groups, score_map, output_path):
-    rows = []
-    excel_row = 2  # 第1行为表头，数据从第2行起
+    rows     = []
+    excel_row = 2   # 第1行为表头，数据从第2行起
 
     for group in variant_groups:
-        children    = group["childAsins"]
+        children     = group["childAsins"]
         num_variants = len(children)
 
         # 按得分降序排列
@@ -180,43 +234,43 @@ def _write_excel(variant_groups, score_map, output_path):
                                  reverse=True)
         total_score = sum(score_map.get(a, 0) for a in children_sorted)
 
-        # ── 汇总行（广告组行，D 列留空，G 列为组总分）──
+        # ── 汇总行（广告组行）：D 列留空，G 列为组总分 ──
         r = excel_row
         rows.append([
-            '',                                                                      # A 状态
-            f'=IF(AND(C{r}<>"",H{r}<>""),CONCAT("DL_",C{r},"_精准_",H{r}),"")' ,  # B 广告活动
-            f'{children_sorted[0]}_{num_variants}V',                                # C 广告组
-            '',                                                                      # D ASIN（汇总行留空）
-            'Y',                                                                     # E 存在
-            '',                                                                      # F 空列
-            total_score,                                                             # G 西柚找词得分（组总分）
+            '',                                                                         # A 状态
+            f'=IF(AND(C{r}<>"",H{r}<>""),CONCAT("DL_",C{r},"_精准_",H{r}),"")' ,     # B 广告活动
+            f'{children_sorted[0]}_{num_variants}V',                                   # C 广告组
+            '',                                                                         # D ASIN（汇总行留空）
+            'Y',                                                                        # E 存在
+            '',                                                                         # F 空列
+            total_score,                                                                # G 西柚找词得分（组总分）
             f'=IF(D{r}="",IF(G{r}="","",IF(G{r}>2500,"VH",IF(G{r}>1500,"H",'
-            f'IF(G{r}>500,"M",IF(G{r}>250,"L",IF(G{r}>=0,"VL","")))))),"")',        # H 热度
-            '',                                                                      # I 相关性
-            '',                                                                      # J 竞价策略
-            '',                                                                      # K 品牌
-            '',                                                                      # L 备注
-            '',                                                                      # M 批量插入
+            f'IF(G{r}>500,"M",IF(G{r}>250,"L",IF(G{r}>=0,"VL","")))))),"")',           # H 热度
+            '',                                                                         # I 相关性
+            '',                                                                         # J 竞价策略
+            '',                                                                         # K 品牌
+            '',                                                                         # L 备注
+            '',                                                                         # M 批量插入
         ])
         excel_row += 1
 
-        # ── 子 ASIN 行（D 列=ASIN，G 列=个体得分）──
+        # ── 子 ASIN 行：D 列=ASIN，G 列=个体得分 ──
         for child in children_sorted:
             r = excel_row
             rows.append([
-                '',                                                                  # A 状态
-                '',                                                                  # B 广告活动
-                '',                                                                  # C 广告组
-                child,                                                               # D ASIN ← 子ASIN
-                'Y',                                                                 # E 存在
-                '',                                                                  # F 空列
-                score_map.get(child, 0),                                             # G 西柚找词得分 ← 个体得分
-                '',                                                                  # H 热度
-                '',                                                                  # I 相关性
-                '',                                                                  # J 竞价策略
-                '',                                                                  # K 品牌
-                '',                                                                  # L 备注
-                f'=IF(D{r}="","",CONCATENATE("asin=","""",D{r},""""))',             # M 批量插入
+                '',                                                                     # A 状态
+                '',                                                                     # B 广告活动
+                '',                                                                     # C 广告组
+                child,                                                                  # D ASIN
+                'Y',                                                                    # E 存在
+                '',                                                                     # F 空列
+                score_map.get(child, 0),                                                # G 西柚找词得分
+                '',                                                                     # H 热度
+                '',                                                                     # I 相关性
+                '',                                                                     # J 竞价策略
+                '',                                                                     # K 品牌
+                '',                                                                     # L 备注
+                f'=IF(D{r}="","",CONCATENATE("asin=",CHAR(34),D{r},CHAR(34)))',        # M 批量插入
             ])
             excel_row += 1
 
