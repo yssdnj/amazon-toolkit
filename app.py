@@ -60,6 +60,15 @@ TOOLS = {
         'module': 'tools.ad_bulk_update',
         'note':   '输入目录须包含 BulkSheetExport*.xlsx 及 targeting_labels_*.xlsx 文件',
     },
+    'asin_variant_score': {
+        'name':    'ASIN变体得分查询',
+        'desc':    '查询ASIN变体及西柚流量得分，输出标准Excel格式',
+        'input_dir': BASE_DIR / 'data' / 'asin_variant_score' / 'input',
+        'output_dir': BASE_DIR / 'data' / 'asin_variant_score' / 'output',
+        'params': [],
+        'module': 'tools.asin_variant_score',
+        'note':   '输入文件须命名为 asin_list.txt，每行一个ASIN',
+    },
 }
 
 # 确保所有目录存在
