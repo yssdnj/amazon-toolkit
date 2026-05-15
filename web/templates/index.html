@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +9,8 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-:root {
+:root,
+[data-theme="dark"] {
   --bg:        #0f0f0f;
   --bg-2:      #181818;
   --bg-3:      #222222;
@@ -27,6 +28,32 @@
   --info:      #5b9cf6;
   --info-dim:  #1a2e4a;
   --warn:      #e0963a;
+  --term-bg:   #0a0a0a;
+  --font-ui:   'Sora', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --radius:    8px;
+  --radius-lg: 12px;
+}
+
+[data-theme="light"] {
+  --bg:        #f4f4f5;
+  --bg-2:      #ffffff;
+  --bg-3:      #ebebec;
+  --border:    #e0e0e2;
+  --border-hi: #c8c8cc;
+  --text:      #111112;
+  --text-2:    #555558;
+  --text-3:    #9999a0;
+  --accent:    #b5862a;
+  --accent-dim:#fef3d8;
+  --ok:        #2e7d4f;
+  --ok-dim:    #dcf5e7;
+  --err:       #c0392b;
+  --err-dim:   #fde8e8;
+  --info:      #1a6bb5;
+  --info-dim:  #dbeafe;
+  --warn:      #c07a1a;
+  --term-bg:   #1c1c1e;
   --font-ui:   'Sora', sans-serif;
   --font-mono: 'DM Mono', monospace;
   --radius:    8px;
@@ -55,6 +82,15 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .topbar-spacer { flex: 1; }
 .topbar-status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-2); }
 .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ok); }
+
+/* ── Theme toggle ────────────────────────── */
+.theme-toggle {
+  width: 32px; height: 32px; border-radius: var(--radius);
+  border: 1px solid var(--border); background: none;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  color: var(--text-2); transition: all 0.15s; flex-shrink: 0;
+}
+.theme-toggle:hover { background: var(--bg-3); color: var(--text); border-color: var(--border-hi); }
 
 .body { display: grid; grid-template-columns: 240px 1fr; overflow: hidden; }
 
@@ -192,7 +228,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 
 /* ── Terminal ─────────────────────────────── */
 .terminal {
-  border-top: 1px solid var(--border); background: #0a0a0a;
+  border-top: 1px solid var(--border); background: var(--term-bg);
   display: flex; flex-direction: column;
 }
 .terminal-bar {
@@ -322,6 +358,15 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
       <span class="topbar-version">v2.0</span>
     </div>
     <div class="topbar-spacer"></div>
+    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="切换主题">
+      <svg id="theme-icon-dark" width="15" height="15" viewBox="0 0 15 15" fill="none" style="display:none">
+        <path d="M7.5 1v1M7.5 13v1M1 7.5H0M15 7.5h-1M2.929 2.929l-.707-.707M13.485 13.485l-.707-.707M2.929 12.071l-.707.707M13.485 2.515l-.707.707" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+        <circle cx="7.5" cy="7.5" r="3" stroke="currentColor" stroke-width="1.2"/>
+      </svg>
+      <svg id="theme-icon-light" width="15" height="15" viewBox="0 0 15 15" fill="none">
+        <path d="M13 7.5a5.5 5.5 0 01-7.5 5.1A5.5 5.5 0 017.5 2a5.5 5.5 0 015.5 5.5z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
+      </svg>
+    </button>
     <div class="topbar-status">
       <div class="status-dot" id="status-dot"></div>
       <span id="status-text">服务运行中</span>
@@ -340,6 +385,11 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
       <div class="sidebar-section">
         <div class="sidebar-label">广告管理</div>
         <div id="tool-list-ad"></div>
+      </div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">ASIN 工具</div>
+        <div id="tool-list-asin"></div>
       </div>
     </nav>
 
@@ -378,6 +428,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 const TOOL_ORDER = {
   weekly: ['weekly_data_clean', 'weekly_report_append'],
   ad:     ['ad_bulk_update'],
+  asin:   ['asin_variant_score'],
 };
 
 let tools = {};
@@ -430,15 +481,22 @@ async function loadTools() {
 }
 
 function renderSidebar() {
-  const nums = { weekly_data_clean: '01', weekly_report_append: '02', ad_bulk_update: '05' };
+  const nums = {
+    weekly_data_clean:   '01',
+    weekly_report_append:'02',
+    ad_bulk_update:      '05',
+    asin_variant_score:  '06',
+  };
   const shorts = {
-    weekly_data_clean: 'MSKU → 汇总文件',
+    weekly_data_clean:    'MSKU → 汇总文件',
     weekly_report_append: '汇总 → 周报主表',
-    ad_bulk_update: 'Bulk Sheet 竞价',
+    ad_bulk_update:       'Bulk Sheet 竞价',
+    asin_variant_score:   '变体得分 → Excel',
   };
 
-  ['weekly','ad'].forEach(group => {
+  ['weekly','ad','asin'].forEach(group => {
     const el = document.getElementById(`tool-list-${group}`);
+    if (!el) return;
     el.innerHTML = '';
     TOOL_ORDER[group].forEach(tid => {
       const t = tools[tid];
@@ -448,7 +506,7 @@ function renderSidebar() {
       btn.id = `btn-${tid}`;
       btn.onclick = () => selectTool(tid);
       btn.innerHTML = `
-        <span class="tool-num">${nums[tid]}</span>
+        <span class="tool-num">${nums[tid] || '--'}</span>
         <div class="tool-info">
           <div class="tool-name">${t.name}</div>
           <div class="tool-short">${shorts[tid] || ''}</div>
@@ -676,6 +734,22 @@ async function runTool() {
     if (btn) { btn.disabled = false; btn.classList.remove('loading'); }
   };
 }
+
+// ── Theme ─────────────────────────────────
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  document.getElementById('theme-icon-dark').style.display  = theme === 'light' ? 'block' : 'none';
+  document.getElementById('theme-icon-light').style.display = theme === 'dark'  ? 'block' : 'none';
+  localStorage.setItem('toolkit-theme', theme);
+}
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme') || 'dark';
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+}
+
+// 初始化主题（读取本地缓存，默认深色）
+applyTheme(localStorage.getItem('toolkit-theme') || 'dark');
 
 loadTools();
 </script>
