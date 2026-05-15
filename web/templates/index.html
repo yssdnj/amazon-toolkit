@@ -205,6 +205,23 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .param-input:focus { border-color: var(--accent); }
 .param-input::placeholder { color: var(--text-3); }
 
+/* Textarea param */
+.param-textarea-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; }
+.param-textarea {
+  background: var(--bg-2); border: 1px solid var(--border);
+  color: var(--text); font-family: var(--font-mono); font-size: 12px;
+  padding: 10px 12px; border-radius: var(--radius); outline: none;
+  transition: border-color 0.15s; resize: vertical;
+  width: 100%; min-height: 140px; line-height: 1.7;
+}
+.param-textarea:focus { border-color: var(--accent); }
+.param-textarea::placeholder { color: var(--text-3); }
+.param-textarea-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 2px;
+}
+.param-textarea-count { font-size: 11px; color: var(--text-3); font-family: var(--font-mono); }
+
 /* Run button */
 .btn-run {
   display: inline-flex; align-items: center; gap: 8px;
@@ -436,6 +453,65 @@ let currentTool = null;
 let running = false;
 let eventSource = null;
 
+function hasTextareaParam(t) {
+  return t.params && t.params.some(p => p.type === 'textarea');
+}
+
+function renderParams(t, tid) {
+  if (!t.params.length) {
+    return `<div style="margin-bottom:20px;">
+      <button class="btn-run" id="run-btn" onclick="runTool()">
+        <svg class="run-icon" width="13" height="13" viewBox="0 0 13 13" fill="currentColor"><path d="M3 2l8 4.5L3 11V2z"/></svg>
+        <div class="spin"></div>运行
+      </button>
+    </div>`;
+  }
+
+  const textareaParam = t.params.find(p => p.type === 'textarea');
+  if (textareaParam) {
+    const p = textareaParam;
+    return `
+    <div class="section-head">${p.label}</div>
+    <div class="param-textarea-group">
+      <textarea class="param-textarea" id="param-${p.key}"
+        placeholder="${p.placeholder}"
+        oninput="updateAsinCount('${p.key}')"></textarea>
+      <div class="param-textarea-footer">
+        <span class="param-textarea-count" id="count-${p.key}">0 个ASIN</span>
+        <button class="btn-run" id="run-btn" onclick="runTool()">
+          <svg class="run-icon" width="13" height="13" viewBox="0 0 13 13" fill="currentColor"><path d="M3 2l8 4.5L3 11V2z"/></svg>
+          <div class="spin"></div>运行
+        </button>
+      </div>
+    </div>`;
+  }
+
+  // 普通 input 参数
+  return `
+  <div class="section-head">运行参数</div>
+  <div class="params-row">
+    ${t.params.map(p => `
+      <div class="param-group">
+        <label class="param-label">${p.label}</label>
+        <input class="param-input" id="param-${p.key}" placeholder="${p.placeholder}" autocomplete="off">
+      </div>`).join('')}
+    <div class="param-group" style="justify-content:flex-end;padding-top:18px;">
+      <button class="btn-run" id="run-btn" onclick="runTool()">
+        <svg class="run-icon" width="13" height="13" viewBox="0 0 13 13" fill="currentColor"><path d="M3 2l8 4.5L3 11V2z"/></svg>
+        <div class="spin"></div>运行
+      </button>
+    </div>
+  </div>`;
+}
+
+function updateAsinCount(key) {
+  const ta = document.getElementById(`param-${key}`);
+  const counter = document.getElementById(`count-${key}`);
+  if (!ta || !counter) return;
+  const lines = ta.value.split('\n').filter(l => l.trim().length > 0);
+  counter.textContent = `${lines.length} 个ASIN`;
+}
+
 function fmtSize(b) {
   if (b < 1024) return b + 'B';
   if (b < 1024*1024) return (b/1024).toFixed(1) + 'KB';
@@ -540,32 +616,11 @@ async function renderPanel(tid) {
       <span>${t.note}</span>
     </div>` : ''}
 
-    ${t.params.length ? `
-    <div class="section-head">运行参数</div>
-    <div class="params-row">
-      ${t.params.map(p => `
-        <div class="param-group">
-          <label class="param-label">${p.label}</label>
-          <input class="param-input" id="param-${p.key}" placeholder="${p.placeholder}" autocomplete="off">
-        </div>`).join('')}
-      <div class="param-group" style="justify-content:flex-end;padding-top:18px;">
-        <button class="btn-run" id="run-btn" onclick="runTool()">
-          <svg class="run-icon" width="13" height="13" viewBox="0 0 13 13" fill="currentColor"><path d="M3 2l8 4.5L3 11V2z"/></svg>
-          <div class="spin"></div>
-          运行
-        </button>
-      </div>
-    </div>` : `
-    <div style="margin-bottom:20px;">
-      <button class="btn-run" id="run-btn" onclick="runTool()">
-        <svg class="run-icon" width="13" height="13" viewBox="0 0 13 13" fill="currentColor"><path d="M3 2l8 4.5L3 11V2z"/></svg>
-        <div class="spin"></div>
-        运行
-      </button>
-    </div>`}
+    ${renderParams(t, tid)}
 
     <div class="section-head">文件管理</div>
     <div class="files-grid">
+      ${hasTextareaParam(t) ? '' : `
       <div class="file-zone">
         <div class="file-zone-head">
           <span class="file-zone-label">输入文件</span>
@@ -579,8 +634,8 @@ async function renderPanel(tid) {
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="margin-bottom:4px;display:block;margin:0 auto 4px;"><path d="M7 10V4M4 6l3-3 3 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M2 11h10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
           点击上传文件
         </div>
-      </div>
-      <div class="file-zone">
+      </div>`}
+      <div class="file-zone" style="${hasTextareaParam(t) ? 'grid-column: 1 / -1;' : ''}">
         <div class="file-zone-head">
           <span class="file-zone-label">输出文件</span>
           <span style="font-size:11px;color:var(--text-3);">${files.output.length} 个文件</span>

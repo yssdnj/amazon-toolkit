@@ -65,9 +65,12 @@ TOOLS = {
         'desc':    '查询ASIN变体及西柚流量得分，输出标准Excel格式',
         'input_dir': BASE_DIR / 'data' / 'asin_variant_score' / 'input',
         'output_dir': BASE_DIR / 'data' / 'asin_variant_score' / 'output',
-        'params': [],
+        'params': [
+            {'key': 'asin_list', 'label': 'ASIN列表', 'type': 'textarea',
+             'placeholder': '每行输入一个ASIN，例如：\nB08N5WRWNW\nB07XJ8C8F5', 'required': True}
+        ],
         'module': 'tools.asin_variant_score',
-        'note':   '输入文件须命名为 asin_list.txt，每行一个ASIN',
+        'note':   '每行输入一个ASIN，支持批量粘贴',
     },
 }
 
@@ -120,6 +123,16 @@ def _run_tool(task_id: str, tool_id: str, params: dict):
                 module.run()
             finally:
                 builtins.input = _orig_input
+        elif tool_id == 'asin_variant_score':
+            asin_text = params.get('asin_list', '').strip()
+            if not asin_text:
+                q.put(('log', '❌ 请输入ASIN列表'))
+                q.put(('done', 'error'))
+                return
+            # 将文本内容写入 input 文件，供工具读取
+            input_file = TOOLS[tool_id]['input_dir'] / 'asin_list.txt'
+            input_file.write_text(asin_text, encoding='utf-8')
+            module.run()
         else:
             module.run()
 
