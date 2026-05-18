@@ -21,7 +21,7 @@ pip install -r requirements.txt
 
 # 启动 Web UI（推荐）
 python app.py
-# 访问 http://localhost:5000
+# 访问 http://localhost:5002
 
 # 或使用 CLI
 python main.py
@@ -46,8 +46,8 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 # 后台启动服务
-nohup python app.py > app.log 2>&1 &
-echo "服务已启动，访问 http://<服务器IP>:5000"
+nohup python3 app.py > app.log 2>&1 &
+echo "服务已启动，访问 http://<服务器IP>:5002"
 ```
 
 ### 更新代码并重启服务
@@ -65,9 +65,9 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 # 重启服务
-pkill -f "python app.py"
-nohup python app.py > app.log 2>&1 &
-echo "服务已重启，访问 http://<服务器IP>:5000"
+pkill -f "python3 app.py"
+nohup python3 app.py > app.log 2>&1 &
+echo "服务已重启，访问 http://<服务器IP>:5002"
 ```
 
 ### 查看运行日志
@@ -77,11 +77,11 @@ echo "服务已重启，访问 http://<服务器IP>:5000"
 tail -f ~/amazon_toolkit/app.log
 
 # 查看服务是否在运行
-ps aux | grep "python app.py"
+ps aux | grep "python3 app.py"
 ```
 
 ### 停止服务
 
 ```bash
-pkill -f "python app.py"
+pkill -f "python3 app.py"
 ```
