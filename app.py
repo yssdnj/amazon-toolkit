@@ -277,4 +277,4 @@ if __name__ == '__main__':
     print('  Amazon Toolkit — 本地 Web 服务')
     print('  访问地址: http://localhost:5000')
     print('=' * 48)
-    app.run(host='0.0.0.0', port=5000, debug=False, threaded=True)
+    app.run(host='0.0.0.0', port=5002, debug=False, threaded=True)
