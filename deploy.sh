@@ -23,13 +23,7 @@ git pull origin "$BRANCH"
 # 2. 停止旧进程
 echo ""
 echo "▶ 停止旧服务..."
-OLD_PID=$(lsof -t -i:$PORT 2>/dev/null || true)
-if [ -n "$OLD_PID" ]; then
-    kill -9 $OLD_PID
-    echo "  已停止 PID $OLD_PID"
-else
-    echo "  无运行中的旧进程"
-fi
+pkill -f "python3 $APP" 2>/dev/null && echo "  旧进程已停止" || echo "  无运行中的旧进程"
 sleep 1
 
 # 3. 启动新进程
@@ -39,11 +33,10 @@ nohup python3 "$APP" > "$LOG" 2>&1 &
 sleep 2
 
 # 4. 检查是否成功启动
-NEW_PID=$(lsof -t -i:$PORT 2>/dev/null || true)
-if [ -n "$NEW_PID" ]; then
+if pgrep -f "python3 $APP" > /dev/null; then
     echo ""
     echo "✅ 服务启动成功！"
-    echo "   PID: $NEW_PID"
+    echo "   PID: $(pgrep -f "python3 $APP")"
     echo "   端口: $PORT"
     echo "   日志: tail -f $LOG"
 else
