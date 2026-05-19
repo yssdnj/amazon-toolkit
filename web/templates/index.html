@@ -601,7 +601,7 @@ function escHtml(s) {
 }
 
 async function loadTools() {
-  const res = await fetch('/api/tools');
+  const res = await fetch('api/tools');
   tools = await res.json();
   renderSidebar();
   const first = TOOL_ORDER.weekly[0];
@@ -655,7 +655,7 @@ async function selectTool(tid) {
 
 async function renderPanel(tid) {
   const t = tools[tid];
-  const filesRes = await fetch(`/api/files/${tid}`);
+  const filesRes = await fetch(`api/files/${tid}`);
   const files = await filesRes.json();
 
   const panel = document.getElementById('panel');
@@ -765,7 +765,7 @@ async function uploadFiles(tid, fileList) {
   const fd = new FormData();
   for (const f of fileList) fd.append('files', f);
   logLine(`📤 上传 ${fileList.length} 个文件...`);
-  const res = await fetch(`/api/upload/${tid}`, { method: 'POST', body: fd });
+  const res = await fetch(`api/upload/${tid}`, { method: 'POST', body: fd });
   const data = await res.json();
   if (data.saved) {
     data.saved.forEach(n => logLine(`✅ 上传成功: ${n}`));
@@ -800,7 +800,7 @@ document.addEventListener('keydown', e => {
 });
 
 async function deleteFile(tid, name, zone = 'input') {
-  const res = await fetch(`/api/delete/${tid}`, {
+  const res = await fetch(`api/delete/${tid}`, {
     method: 'POST', headers: {'Content-Type':'application/json'},
     body: JSON.stringify({ filename: name, zone })
   });
@@ -809,11 +809,11 @@ async function deleteFile(tid, name, zone = 'input') {
 }
 
 function downloadFile(tid, name) {
-  window.location.href = `/api/download/${tid}/${encodeURIComponent(name)}`;
+  window.location.href = `api/download/${tid}/${encodeURIComponent(name)}`;
 }
 
 async function refreshFiles(tid) {
-  const res = await fetch(`/api/files/${tid}`);
+  const res = await fetch(`api/files/${tid}`);
   const files = await res.json();
   const inp = document.getElementById('files-input');
   const out = document.getElementById('files-output');
@@ -839,13 +839,13 @@ async function runTool() {
 
   if (eventSource) { eventSource.close(); eventSource = null; }
 
-  const res = await fetch(`/api/run/${currentTool}`, {
+  const res = await fetch(`api/run/${currentTool}`, {
     method: 'POST', headers: {'Content-Type':'application/json'},
     body: JSON.stringify(params)
   });
   const { task_id } = await res.json();
 
-  eventSource = new EventSource(`/api/stream/${task_id}`);
+  eventSource = new EventSource(`api/stream/${task_id}`);
   eventSource.onmessage = async (e) => {
     const data = JSON.parse(e.data);
     if (data.type === 'log') {
