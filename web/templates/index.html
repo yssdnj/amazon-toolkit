@@ -233,6 +233,16 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 }
 .param-input:focus { border-color: var(--accent); }
 .param-input::placeholder { color: var(--text-3); }
+.param-select {
+  background: var(--bg-2); border: 1px solid var(--border);
+  color: var(--text); font-family: var(--font-mono); font-size: 13px;
+  padding: 7px 12px; border-radius: var(--radius); outline: none;
+  transition: border-color 0.15s; width: 100px; cursor: pointer;
+  appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath d='M2 3.5l3 3 3-3' stroke='%23888' stroke-width='1.2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
+  padding-right: 28px;
+}
+.param-select:focus { border-color: var(--accent); }
 
 /* Textarea param */
 .param-textarea-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; }
@@ -512,16 +522,26 @@ function renderParams(t, tid) {
   }
 
   const textareaParam = t.params.find(p => p.type === 'textarea');
+  const selectParams  = t.params.filter(p => p.type === 'select');
   if (textareaParam) {
-    const p = textareaParam;
     return `
-    <div class="section-head">${p.label}</div>
+    ${selectParams.length ? `
+    <div class="params-row" style="margin-bottom:12px;">
+      ${selectParams.map(p => `
+        <div class="param-group">
+          <label class="param-label">${p.label}</label>
+          <select class="param-select" id="param-${p.key}">
+            ${p.options.map(o => `<option value="${o}"${o === p.default ? ' selected' : ''}>${o}</option>`).join('')}
+          </select>
+        </div>`).join('')}
+    </div>` : ''}
+    <div class="section-head">${textareaParam.label}</div>
     <div class="param-textarea-group">
-      <textarea class="param-textarea" id="param-${p.key}"
-        placeholder="${p.placeholder}"
-        oninput="updateAsinCount('${p.key}')"></textarea>
+      <textarea class="param-textarea" id="param-${textareaParam.key}"
+        placeholder="${textareaParam.placeholder}"
+        oninput="updateAsinCount('${textareaParam.key}')"></textarea>
       <div class="param-textarea-footer">
-        <span class="param-textarea-count" id="count-${p.key}">0 个ASIN</span>
+        <span class="param-textarea-count" id="count-${textareaParam.key}">0 个ASIN</span>
         <button class="btn-run" id="run-btn" onclick="runTool()">
           <svg class="run-icon" width="13" height="13" viewBox="0 0 13 13" fill="currentColor"><path d="M3 2l8 4.5L3 11V2z"/></svg>
           <div class="spin"></div>运行
@@ -530,15 +550,24 @@ function renderParams(t, tid) {
     </div>`;
   }
 
-  // 普通 input 参数
+  // 普通 input / select 参数
   return `
   <div class="section-head">运行参数</div>
   <div class="params-row">
-    ${t.params.map(p => `
-      <div class="param-group">
-        <label class="param-label">${p.label}</label>
-        <input class="param-input" id="param-${p.key}" placeholder="${p.placeholder}" autocomplete="off">
-      </div>`).join('')}
+    ${t.params.map(p => {
+      if (p.type === 'select') return `
+        <div class="param-group">
+          <label class="param-label">${p.label}</label>
+          <select class="param-select" id="param-${p.key}">
+            ${p.options.map(o => `<option value="${o}"${o === p.default ? ' selected' : ''}>${o}</option>`).join('')}
+          </select>
+        </div>`;
+      return `
+        <div class="param-group">
+          <label class="param-label">${p.label}</label>
+          <input class="param-input" id="param-${p.key}" placeholder="${p.placeholder}" autocomplete="off">
+        </div>`;
+    }).join('')}
     <div class="param-group" style="justify-content:flex-end;padding-top:18px;">
       <button class="btn-run" id="run-btn" onclick="runTool()">
         <svg class="run-icon" width="13" height="13" viewBox="0 0 13 13" fill="currentColor"><path d="M3 2l8 4.5L3 11V2z"/></svg>

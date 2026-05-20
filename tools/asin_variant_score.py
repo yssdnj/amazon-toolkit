@@ -45,7 +45,10 @@ COLUMN_WIDTHS = {
 
 # ── 公共入口 ──────────────────────────────────────────────
 
-def run():
+def run(country='US'):
+    global COUNTRY
+    COUNTRY = country.upper()
+
     base_path  = Path(__file__).resolve().parents[1]
     input_dir  = base_path / 'data' / 'asin_variant_score' / 'input'
     output_dir = base_path / 'data' / 'asin_variant_score' / 'output'

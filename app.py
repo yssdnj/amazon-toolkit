@@ -72,6 +72,8 @@ TOOLS = {
         'input_dir': BASE_DIR / 'data' / 'asin_variant_score' / 'input',
         'output_dir': BASE_DIR / 'data' / 'asin_variant_score' / 'output',
         'params': [
+            {'key': 'country', 'label': '站点', 'type': 'select',
+             'options': ['US', 'UK', 'DE', 'JP'], 'default': 'US'},
             {'key': 'asin_list', 'label': 'ASIN列表', 'type': 'textarea',
              'placeholder': '每行输入一个ASIN，例如：\nB08N5WRWNW\nB07XJ8C8F5', 'required': True}
         ],
@@ -135,10 +137,11 @@ def _run_tool(task_id: str, tool_id: str, params: dict):
                 q.put(('log', '❌ 请输入ASIN列表'))
                 q.put(('done', 'error'))
                 return
+            country = params.get('country', 'US').strip() or 'US'
             # 将文本内容写入 input 文件，供工具读取
             input_file = TOOLS[tool_id]['input_dir'] / 'asin_list.txt'
             input_file.write_text(asin_text, encoding='utf-8')
-            module.run()
+            module.run(country=country)
         else:
             module.run()
 
