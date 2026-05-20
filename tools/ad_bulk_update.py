@@ -41,14 +41,30 @@ def find_file(directory: Path, pattern: str) -> Path | None:
 def detect_label_files(input_dir: Path) -> list:
     """
     扫描 input 目录，找出所有 targeting_labels 文件。
+    匹配规则：targeting_labels_{产品名}_*.xlsx
+      - 产品名必须存在（如 SL），否则跳过并报错
+      - ASIN/KW 可选：有则按指定类型处理，无则同时处理 ASIN 和 KW
     返回 [(路径, 'ASIN'|'KW'), ...]
     """
     results = []
     for f in sorted(input_dir.iterdir()):
-        m = re.search(r'targeting_labels_.+_(ASIN|KW)_[\d-]+\.xlsx', f.name, re.IGNORECASE)  # 支持 2026-04-20 或 20260420
-        if m:
-            label_type = m.group(1).upper()
-            results.append((f, label_type))
+        if not re.match(r'targeting_labels_', f.name, re.IGNORECASE):
+            continue
+        if not f.name.lower().endswith('.xlsx'):
+            continue
+        # 提取产品名（targeting_labels_ 后第一个 _ 前的内容）
+        m_product = re.match(r'targeting_labels_([^_]+)', f.name, re.IGNORECASE)
+        if not m_product or not m_product.group(1):
+            print(f'⚠️  文件名缺少产品标识，跳过: {f.name}（期望格式：targeting_labels_{{产品名}}_*.xlsx）')
+            continue
+        # 提取 ASIN/KW 类型
+        m_type = re.search(r'\b(ASIN|KW)\b', f.name, re.IGNORECASE)
+        if m_type:
+            results.append((f, m_type.group(1).upper()))
+        else:
+            # 未指定类型，同时处理 ASIN 和 KW
+            results.append((f, 'ASIN'))
+            results.append((f, 'KW'))
     return results
 
 
@@ -267,14 +283,14 @@ def run():
     # ── 2. 找所有 targeting_labels 文件 ──
     label_files = detect_label_files(input_dir)
     if not label_files:
-        print('❌ 未找到 targeting_labels_*_{ASIN|KW}_*.xlsx，请检查 input 目录')
+        print('❌ 未找到 targeting_labels_*.xlsx，请检查 input 目录')
         return
     if len(label_files) > 1:
         names = [f.name for f, _ in label_files]
         # 同时存在 ASIN 和 KW 两个文件是正常情况，仅当产品名不同时才警告
         products = set()
         for f, _ in label_files:
-            m = re.search(r'targeting_labels_(.+?)_(ASIN|KW)_', f.name, re.IGNORECASE)
+            m = re.search(r'targeting_labels_([^_]+)', f.name, re.IGNORECASE)
             if m:
                 products.add(m.group(1))
         if len(products) > 1:
@@ -321,10 +337,11 @@ def run():
         print(f'   ✅ 竞价指导文件已回写: {label_path.name}')
 
     # ── 5. 保存更新后的 Bulk 文件（加产品名和 _updated 后缀）──
-    # 从 targeting_labels 文件名提取产品名，如 targeting_labels_SL_ASIN_... → _SL
+    # 从 targeting_labels 文件名提取产品名：targeting_labels_ 后第一段下划线前的内容
+    # 例：targeting_labels_SL_*.xlsx → _SL
     product_name = ''
     if label_files:
-        m = re.search(r'targeting_labels_(.+?)_(ASIN|KW)_', label_files[0][0].name, re.IGNORECASE)
+        m = re.search(r'targeting_labels_([^_]+)', label_files[0][0].name, re.IGNORECASE)
         if m:
             product_name = f'_{m.group(1)}'
     output_path = output_dir / f'{bulk_path.stem}{product_name}_updated.xlsx'
