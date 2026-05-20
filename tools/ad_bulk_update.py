@@ -43,8 +43,9 @@ def detect_label_files(input_dir: Path) -> list:
     扫描 input 目录，找出所有 targeting_labels 文件。
     匹配规则：targeting_labels_{产品名}_*.xlsx
       - 产品名必须存在（如 SL），否则跳过并报错
-      - ASIN/KW 可选：有则按指定类型处理，无则同时处理 ASIN 和 KW
-    返回 [(路径, 'ASIN'|'KW'), ...]
+      - 文件名含 ASIN → 只处理 ASIN；含 KW → 只处理 KW
+      - 两者都没有 → 文件已同时包含 ASIN 和 KW，处理一次（'BOTH'）
+    返回 [(路径, 'ASIN'|'KW'|'BOTH'), ...]
     """
     results = []
     for f in sorted(input_dir.iterdir()):
@@ -62,9 +63,8 @@ def detect_label_files(input_dir: Path) -> list:
         if m_type:
             results.append((f, m_type.group(1).upper()))
         else:
-            # 未指定类型，同时处理 ASIN 和 KW
-            results.append((f, 'ASIN'))
-            results.append((f, 'KW'))
+            # 未指定类型：文件默认同时包含 ASIN 和 KW，处理一次
+            results.append((f, 'BOTH'))
     return results
 
 
@@ -103,21 +103,30 @@ def build_bulk_index(df_bulk: pd.DataFrame, label_type: str) -> dict:
 
     ASIN → Entity='Product Targeting'，Targeting列='Product Targeting Expression'
     KW   → Entity='Keyword'，          Targeting列='Keyword Text'
+    BOTH → 同时索引以上两种实体
     """
-    entity_filter  = 'Product Targeting' if label_type == 'ASIN' else 'Keyword'
-    targeting_col  = 'Product Targeting Expression' if label_type == 'ASIN' else 'Keyword Text'
+    if label_type == 'BOTH':
+        type_pairs = [
+            ('Product Targeting', 'Product Targeting Expression'),
+            ('Keyword',           'Keyword Text'),
+        ]
+    elif label_type == 'ASIN':
+        type_pairs = [('Product Targeting', 'Product Targeting Expression')]
+    else:
+        type_pairs = [('Keyword', 'Keyword Text')]
 
     index_map = {}
-    for i, row in df_bulk.iterrows():
-        if str(row.get('Entity', '')).strip() != entity_filter:
-            continue
-        key = (
-            str(row.get('Campaign Name (Informational only)', '')).strip(),
-            str(row.get('Ad Group Name (Informational only)', '')).strip(),
-            str(row.get(targeting_col, '')).strip(),
-        )
-        if key not in index_map:
-            index_map[key] = i
+    for entity_filter, targeting_col in type_pairs:
+        for i, row in df_bulk.iterrows():
+            if str(row.get('Entity', '')).strip() != entity_filter:
+                continue
+            key = (
+                str(row.get('Campaign Name (Informational only)', '')).strip(),
+                str(row.get('Ad Group Name (Informational only)', '')).strip(),
+                str(row.get(targeting_col, '')).strip(),
+            )
+            if key not in index_map:
+                index_map[key] = i
     return index_map
 
 
@@ -225,12 +234,15 @@ def save_bulk_updated(bulk_path: Path, output_path: Path, df_bulk: pd.DataFrame,
     wb.save(output_path)
 
 
-def save_label_updated(label_path: Path, df_label_full: pd.DataFrame):
+def save_label_updated(label_path: Path, output_path: Path, df_label_full: pd.DataFrame):
     """
-    将 原竞价/新竞价/操作日期 回写到竞价指导文件（原地保存）。
+    将 原竞价/新竞价/操作日期 写入竞价指导文件副本，保存到 output_path（原文件不动）。
     按列名定位，列不存在时自动追加到末尾。
     """
-    wb = load_workbook(label_path)
+    import shutil as _shutil
+    _shutil.copy(label_path, output_path)
+
+    wb = load_workbook(output_path)
     ws = wb.active
 
     header = [cell.value for cell in ws[1]]
@@ -258,7 +270,7 @@ def save_label_updated(label_path: Path, df_label_full: pd.DataFrame):
         ws.cell(row=excel_row, column=col_U, value=float(row['新竞价']))
         ws.cell(row=excel_row, column=col_V, value=str(row['操作日期']))
 
-    wb.save(label_path)
+    wb.save(output_path)
 
 
 # ──────────────────────────────────────────────
@@ -312,7 +324,8 @@ def run():
 
     # ── 4. 逐个 targeting_labels 文件处理 ──
     for label_path, label_type in label_files:
-        print(f'\n🔍 处理: {label_path.name}（{label_type}）')
+        type_label = 'ASIN + KW' if label_type == 'BOTH' else label_type
+        print(f'\n🔍 处理: {label_path.name}（{type_label}）')
 
         df_label_filtered, df_label_full = load_label_df(label_path)
 
@@ -332,9 +345,10 @@ def run():
         )
         all_updated_rows.extend(updated_rows)
 
-        # 回写竞价指导文件（原地）
-        save_label_updated(label_path, df_label_full)
-        print(f'   ✅ 竞价指导文件已回写: {label_path.name}')
+        # 输出竞价指导文件副本（原文件不动）
+        label_output_path = output_dir / f'{label_path.stem}_update.xlsx'
+        save_label_updated(label_path, label_output_path, df_label_full)
+        print(f'   ✅ 竞价指导文件已输出: {label_output_path.name}')
 
     # ── 5. 保存更新后的 Bulk 文件（加产品名和 _updated 后缀）──
     # 从 targeting_labels 文件名提取产品名：targeting_labels_ 后第一段下划线前的内容

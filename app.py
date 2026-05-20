@@ -60,10 +60,11 @@ TOOLS = {
         'module': 'tools.ad_bulk_update',
         'note':   '输入目录须包含 BulkSheetExport*.xlsx 及 targeting_labels_*.xlsx 文件',
         'guide':  [
-            ('输入文件', 'targeting_labels_*.xlsx — 竞价更新指导文件，包含各关键词/ASIN的调价规则；BulkSheetExport*.xlsx — 从亚马逊广告后台导出的 Bulk Sheet 文件'),
-            ('输出文件', 'BulkSheetExport*_updated.xlsx — 竞价已更新的 Bulk 文件，可直接回传亚马逊'),
-            ('调价逻辑', '高 ACoS（超标）→ 降价标红；高点击不出单 → 标黄提示；竞价指导文件同步回写 T列原竞价 / U列新竞价 / V列操作日期'),
-            ('注意事项', '同一目录下只处理最新的一对文件；Bulk 文件中的 Search Term Report Sheet 会被自动删除'),
+            ('输入文件', 'BulkSheetExport*.xlsx — 从亚马逊广告后台导出的 Bulk Sheet 文件；targeting_labels_{产品名}_[ASIN|KW]_{日期范围}.xlsx — 竞价指导文件，产品名必填（如 SL），ASIN/KW 可选，日期范围表示分析数据覆盖时间'),
+            ('文件命名', '仅 ASIN：targeting_labels_SL_ASIN_2026-05-09_2026-05-15.xlsx → 只处理 Product Targeting；仅 KW：targeting_labels_SL_KW_2026-05-09_2026-05-15.xlsx → 只处理 Keyword；混合：targeting_labels_SL_2026-05-09_2026-05-15.xlsx → 同时处理 ASIN 和 KW，只运行一次'),
+            ('筛选条件', 'label 列含「高ACoS出单」或「高点击不出单」，且 orders 列 < 10 的行才会被处理'),
+            ('调价逻辑', '新竞价 = 原竞价 × (1 + adj_pct)，结果保留 4 位小数；被修改的 Bid 单元格标黄，Operation 列同步设为 Update'),
+            ('输出文件', 'BulkSheetExport*_updated.xlsx — 可直接回传亚马逊的 Bulk 文件（已删除 RAS Search Term Report）；targeting_labels_*_update.xlsx — 含原竞价 / 新竞价 / 操作日期，原文件不动'),
         ],
     },
     'asin_variant_score': {

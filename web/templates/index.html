@@ -695,7 +695,7 @@ async function renderPanel(tid) {
         <div class="panel-desc">${t.desc}</div>
       </div>
       ${t.guide && t.guide.length ? `
-      <button class="guide-toggle" id="guide-toggle" onclick="toggleGuide()">
+      <button class="guide-toggle open" id="guide-toggle" onclick="toggleGuide()">
         <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
           <circle cx="6.5" cy="6.5" r="5.5" stroke="currentColor" stroke-width="1.2"/>
           <path d="M6.5 5.5v4M6.5 4v.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
@@ -707,7 +707,7 @@ async function renderPanel(tid) {
       </button>` : ''}
     </div>
     ${t.guide && t.guide.length ? `
-    <div class="guide-box" id="guide-box">
+    <div class="guide-box open" id="guide-box">
       <div class="guide-box-inner">
         ${t.guide.map(([label, val]) => `
         <div class="guide-row">
