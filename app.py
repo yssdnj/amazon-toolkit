@@ -233,7 +233,9 @@ def api_delete(tool_id):
 def api_download(tool_id, filename):
     if tool_id not in TOOLS:
         return jsonify({'error': '工具不存在'}), 404
-    return send_from_directory(TOOLS[tool_id]['output_dir'], filename, as_attachment=True)
+    zone = request.args.get('zone', 'output')
+    directory = TOOLS[tool_id]['input_dir'] if zone == 'input' else TOOLS[tool_id]['output_dir']
+    return send_from_directory(directory, filename, as_attachment=True)
 
 
 @app.route('/api/run/<tool_id>', methods=['POST'])

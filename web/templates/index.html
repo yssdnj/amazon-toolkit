@@ -761,16 +761,12 @@ function renderFileList(files, tid, zone) {
     <div class="file-row">
       <span class="file-row-name" title="${f.name}">${f.name}</span>
       <span class="file-row-size">${fmtSize(f.size)}</span>
-      ${zone === 'output' ? `
-        <button class="file-row-dl" title="下载" onclick="downloadFile('${tid}','${escHtml(f.name)}')">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v6M3 6l3 3 3-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M2 10h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-        </button>
-        <button class="file-row-del" title="删除" onclick="confirmDelete('${tid}','${escHtml(f.name)}','output')">
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 2l6 6M8 2L2 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-        </button>` : `
-        <button class="file-row-del" title="删除" onclick="confirmDelete('${tid}','${escHtml(f.name)}','input')">
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 2l6 6M8 2L2 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-        </button>`}
+      <button class="file-row-dl" title="下载" onclick="downloadFile('${tid}','${escHtml(f.name)}','${zone}')">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2v6M3 6l3 3 3-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M2 10h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      </button>
+      <button class="file-row-del" title="删除" onclick="confirmDelete('${tid}','${escHtml(f.name)}','${zone}')">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 2l6 6M8 2L2 8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      </button>
     </div>`).join('');
 }
 
@@ -837,8 +833,8 @@ async function deleteFile(tid, name, zone = 'input') {
   if (data.ok) { logLine(`🗑 已删除 [${zone === 'output' ? '输出' : '输入'}]: ${name}`); await refreshFiles(tid); }
 }
 
-function downloadFile(tid, name) {
-  window.location.href = `api/download/${tid}/${encodeURIComponent(name)}`;
+function downloadFile(tid, name, zone = 'output') {
+  window.location.href = `api/download/${tid}/${encodeURIComponent(name)}?zone=${zone}`;
 }
 
 async function refreshFiles(tid) {
