@@ -1,9 +1,10 @@
 # Claude Code working files
 .claude/
 
-# Data files (xlsx/xls not tracked, but keep folder structure)
+# Data files (not tracked, but keep folder structure)
 data/**/*.xlsx
 data/**/*.xls
+data/**/*.txt
 
 # Python
 __pycache__/
