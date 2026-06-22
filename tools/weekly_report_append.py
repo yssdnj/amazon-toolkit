@@ -353,17 +353,25 @@ def _expand_table_ref(ws, inserted_row):
 
 
 def _update_summary_formulas(ws, summary_row, old_end_row, new_end_row):
-    """更新汇总行的 SUM 公式，将范围末端从 old_end_row 扩展到 new_end_row
-    对应 Excel 插入行时自动扩展相邻 SUM 范围的行为（openpyxl 不会自动扩展）
-    例：=SUM(B3:B81) → =SUM(B3:B82)
+    """更新汇总行的公式引用，处理两种情况：
+    1. 数据范围末端扩展（SUM 类）：old_end_row → new_end_row
+       例：=SUM(B3:B88) → =SUM(B3:B89)
+    2. 汇总行自引用偏移（除法类，如 ACoS）：old_summary_row → summary_row
+       例：插入前汇总行在第89行，=Z89/AA89 → 移到第90行后应变为 =Z90/AA90
     """
+    old_summary_row = summary_row - 1  # 插入前汇总行所在位置
+
     def expand_ref(match):
         col_abs = match.group(1)
         col     = match.group(2)
         row_abs = match.group(3)
         row     = int(match.group(4))
-        if not row_abs and row == old_end_row:
+        if row_abs:
+            return match.group(0)
+        if row == old_end_row:
             return f"{col_abs}{col}{new_end_row}"
+        if row == old_summary_row:
+            return f"{col_abs}{col}{summary_row}"
         return match.group(0)
 
     for col in range(1, ws.max_column + 1):
