@@ -68,7 +68,7 @@ def run():
 
 def _win_add_row(file_path, save_path=None):
 
-    sheets = ["SL","Toy", "ToyDH", "DL", "DSL", "MFL", "SFM","SL_访问量","Toy_访问量", "ToyDH_访问量", "DL_访问量", "DSL_访问量", "MFL_访问量", "SFM_访问量"]
+    sheets = ["SL","Toy", "ToyDH", "DL", "DSL", "MFL", "SFM", "SC","SL_访问量","Toy_访问量", "ToyDH_访问量", "DL_访问量", "DSL_访问量", "MFL_访问量", "SFM_访问量", "SC_访问量"]
 
     # ==============================================================================
     # 20260503修改：App 生命周期改用 try/finally 保护
@@ -144,7 +144,7 @@ def _win_add_row(file_path, save_path=None):
 
 def _win_fill_data(file1, file2):
 
-    sheet_map = ["SL", "Toy", "ToyDH", "DL", "DSL", "MFL","SFM"]
+    sheet_map = ["SL", "Toy", "ToyDH", "DL", "DSL", "MFL", "SFM", "SC"]
 
     summary_cols = [
         "销量", "订单量", "销售额", "促销销量", "促销订单量", "促销销售额",
@@ -241,6 +241,7 @@ def _win_fill_session(file1, file2):
         "DSL_访问量":   "DSL",
         "MFL_访问量":   "MFL",
         "SFM_访问量":   "SFM",
+        "SC_访问量":    "SC",
     }
 
     session_cols = [
@@ -414,9 +415,9 @@ def _get_headers(ws, header_row=3):
 
 def _linux_add_row(file_path, save_path=None):
 
-    sheets = ["SL", "Toy", "ToyDH", "DL", "DSL", "MFL", "SFM",
+    sheets = ["SL", "Toy", "ToyDH", "DL", "DSL", "MFL", "SFM", "SC",
               "SL_访问量", "Toy_访问量", "ToyDH_访问量", "DL_访问量",
-              "DSL_访问量", "MFL_访问量", "SFM_访问量"]
+              "DSL_访问量", "MFL_访问量", "SFM_访问量", "SC_访问量"]
 
     wb = load_workbook(file_path)
 
@@ -459,7 +460,7 @@ def _linux_add_row(file_path, save_path=None):
 
 def _linux_fill_data(file1, file2):
 
-    sheet_map = ["SL", "Toy", "ToyDH", "DL", "DSL", "MFL", "SFM"]
+    sheet_map = ["SL", "Toy", "ToyDH", "DL", "DSL", "MFL", "SFM", "SC"]
 
     summary_cols = [
         "销量", "订单量", "销售额", "促销销量", "促销订单量", "促销销售额",
@@ -529,6 +530,7 @@ def _linux_fill_session(file1, file2):
         "DSL_访问量":   "DSL",
         "MFL_访问量":   "MFL",
         "SFM_访问量":   "SFM",
+        "SC_访问量":    "SC",
     }
 
     session_cols = [

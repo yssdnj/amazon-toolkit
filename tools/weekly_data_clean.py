@@ -26,7 +26,8 @@ SUBGROUP_RULES = {
     'DL': ['w/oHandle AL', 'w/Handle AL', 'w/oHandle ZN', 'w/Handle ZN'],
     'DSL': ['3FT', '6FT'],
     'MFL': ['AL', 'ZN'],
-    'SFM': ['SFM 1', 'SFM 2', 'SFM 3']
+    'SFM': ['SFM 1', 'SFM 2', 'SFM 3'],
+    'SC': ['SC S', 'SC M', 'SC L']
 }
 
 
