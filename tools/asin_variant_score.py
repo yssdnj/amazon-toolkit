@@ -10,8 +10,6 @@ asin_variant_score.py — ASIN 变体流量得分查询
   4. 按参考格式写入 Excel（D列=ASIN，G列=得分，含公式）
 """
 
-import hashlib
-import json
 import os
 import time
 from pathlib import Path
@@ -20,9 +18,11 @@ import pandas as pd
 import requests
 
 # ── 西柚 API 配置 ─────────────────────────────────────────
-XIYOU_BASE_URL     = "https://openapi.xiyouzhaoci.com"
-XIYOU_CLIENT_ID    = "xiyou.ak.8273645"
-XIYOU_CLIENT_SECRET = "xiyou.sk.928374650192837"
+XIYOU_BASE_URL = "https://openapi.xydc.com"
+XIYOU_API_KEY = os.environ.get(
+    "XIYOU_API_KEY",
+    "48babf2aa7a2a1af81e667c8d49242b3",
+)
 COUNTRY = "US"
 
 # 流量得分接口每批上限
@@ -93,19 +93,13 @@ def run(country='US'):
 # ── API 调用 ──────────────────────────────────────────────
 
 def _api_call(endpoint, body, retry=MAX_RETRIES):
-    """带签名的 POST 请求，支持自动重试"""
+    """使用西柚 OpenAPI V2 API Key 鉴权发送 POST 请求，支持自动重试。"""
     for attempt in range(1, retry + 1):
         try:
-            timestamp = str(int(time.time()))
-            body_str  = json.dumps(body, separators=(',', ':'), sort_keys=True)
-            raw  = f"{XIYOU_CLIENT_ID}{timestamp}{XIYOU_CLIENT_SECRET}{body_str}"
-            sign = hashlib.sha256(raw.encode('utf-8')).hexdigest()
-
             headers = {
                 'Content-Type': 'application/json',
-                'X-Client-Id':  XIYOU_CLIENT_ID,
-                'X-Timestamp':  timestamp,
-                'X-Sign':       sign,
+                'X-Auth-Version': '2.0',
+                'X-Api-Key': XIYOU_API_KEY,
             }
             resp = requests.post(
                 f"{XIYOU_BASE_URL}{endpoint}",
